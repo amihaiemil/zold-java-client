@@ -1,0 +1,8 @@
+sudo: required
+language: java
+jdk:
+  - oraclejdk8
+  - openjdk8
+script:
+  - set -e
+  - mvn clean install -Pcheckstyle,itcases jacoco:report coveralls:report
