@@ -1,8 +1,11 @@
 # zold-java-client
 
+[![Managed by Zerocrat](https://www.0crat.com/badge/GFCHY7NQG.svg)](https://www.0crat.com/p/GFCHY7NQG)
+
 [![Build Status](https://travis-ci.org/amihaiemil/zold-java-client.svg?branch=master)](https://travis-ci.org/amihaiemil/zold-java-client)
 [![Coverage Status](https://coveralls.io/repos/github/amihaiemil/zold-java-client/badge.svg?branch=master)](https://coveralls.io/github/amihaiemil/zold-java-client?branch=master)
 
+[![Donate via Zerocracy](https://www.0crat.com/contrib-badge/GFCHY7NQG.svg)](https://www.0crat.com/contrib/GFCHY7NQG)
 [![DevOps By Rultor.com](http://www.rultor.com/b/amihaiemil/zold-java-client)](http://www.rultor.com/p/amihaiemil/zold-java-client)
 [![We recommend IntelliJ IDEA](http://amihaiemil.github.io/images/intellij-idea-recommend.svg)](https://www.jetbrains.com/idea/)
 
