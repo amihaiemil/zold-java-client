@@ -37,16 +37,16 @@ import org.junit.Test;
  * @version $Id$
  * @since 0.0.1
  */
-public final class RestfulZoldNetTestCase {
+public final class RestfulWtsTestCase {
     
     /**
-     * {@link RestfulZoldNet} can be instantiated.
+     * {@link RestfulWts} can be instantiated.
      */
     @Test
     public void isInstantiated() {
         MatcherAssert.assertThat(
-            new RestfulZoldNet(URI.create("localhost:8080/zold")),
-            Matchers.instanceOf(ZoldNet.class)
+            new RestfulWts(URI.create("localhost:8080/zold")),
+            Matchers.instanceOf(Wts.class)
         );
     }
 }

@@ -38,7 +38,7 @@ import org.apache.http.impl.client.HttpClients;
  * @todo #4:30min Add methods for API entry points to this class, once we find
  *  the actual API docs for Zold.
  */
-public final class RestfulZoldNet implements ZoldNet {
+public final class RestfulWts implements Wts {
     
     /**
      * Apache HttpClient which sends the requests.
@@ -54,7 +54,7 @@ public final class RestfulZoldNet implements ZoldNet {
      * Constructor.
      * @param baseUri Base URI.
      */
-    public RestfulZoldNet(final URI baseUri) {
+    public RestfulWts(final URI baseUri) {
         this(
             HttpClients.custom()
                 .setMaxConnPerRoute(10)
@@ -72,7 +72,7 @@ public final class RestfulZoldNet implements ZoldNet {
      * @param client Given HTTP Client.
      * @param baseUri Base URI.
      */
-    public RestfulZoldNet(final HttpClient client, final URI baseUri) {
+    public RestfulWts(final HttpClient client, final URI baseUri) {
         this.client = client;
         this.baseUri = baseUri;
     }
