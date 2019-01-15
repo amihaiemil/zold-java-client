@@ -10,9 +10,13 @@ import org.apache.http.message.BasicHeader;
 
 /**
  * User Agent Request Header Interceptor.
- * 
+ * @author Boris Kuzmic for docker-java-api project
+ * @since 0.0.1
+ * @version 0.0.1
  */
-
+/**
+* TODO use this class when instantiating the HttpClient.
+*/
 final class UserAgentRequestHeader extends RequestDefaultHeaders {
 
     /**
