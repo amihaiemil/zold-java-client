@@ -37,3 +37,10 @@ Make sure the maven build:
 
 passes before making a PR. [Checkstyle](http://checkstyle.sourceforge.net/) will make sure
 you're following our code style and guidlines.
+
+This project is managed by [Zerocracy](http://www.zerocracy.com/), see the 
+[Policy](http://www.zerocracy.com/policy.html) for more details.
+
+Note that we do not have Zerocracy QAs, yet we still try to adhere to the [QA
+ rules](http://www.zerocracy.com/policy.html#42) as much as possible (we won't block any PRs for cosmetic stuff such 
+ as commit messages, though).
