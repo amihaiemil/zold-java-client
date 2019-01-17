@@ -25,12 +25,28 @@
  */
 package com.amihaiemil.zold;
 
+import java.net.URI;
+
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.Test;
+
 /**
- * Zold network entry point.
+ * Unit tests for {@link RestfulZoldNet}.
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
  */
-public interface ZoldNet {
-
+public final class RestfulWtsTestCase {
+    
+    /**
+     * {@link RestfulWts} can be instantiated.
+     */
+    @Test
+    public void isInstantiated() {
+        MatcherAssert.assertThat(
+            new RestfulZoldWts(URI.create("localhost:8080/zold")),
+            Matchers.instanceOf(ZoldWts.class)
+        );
+    }
 }
