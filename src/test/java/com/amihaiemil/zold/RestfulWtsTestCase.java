@@ -45,8 +45,8 @@ public final class RestfulWtsTestCase {
     @Test
     public void isInstantiated() {
         MatcherAssert.assertThat(
-            new RestfulWts(URI.create("localhost:8080/zold")),
-            Matchers.instanceOf(Wts.class)
+            new RestfulZoldWts(URI.create("localhost:8080/zold")),
+            Matchers.instanceOf(ZoldWts.class)
         );
     }
 }

@@ -1,0 +1,30 @@
+{
+    "run": {
+        "default": "",
+        "items": [
+            {
+                "name": "zold-java-client",
+                "projectName": "zold-java-client",
+                "workingDirectory": "/home/ammar/zold-java-client",
+                "args": [],
+                "vmargs": [],
+                "env": {},
+                "preLaunchTask": ""
+            }
+        ]
+    },
+    "debug": {
+        "default": "",
+        "items": [
+            {
+                "name": "zold-java-client",
+                "projectName": "zold-java-client",
+                "workingDirectory": "/home/ammar/zold-java-client",
+                "args": [],
+                "vmargs": [],
+                "env": {},
+                "preLaunchTask": ""
+            }
+        ]
+    }
+}

@@ -25,55 +25,12 @@
  */
 package com.amihaiemil.zold;
 
-import java.net.URI;
-
-import org.apache.http.client.HttpClient;
-import org.apache.http.impl.client.HttpClients;
-
 /**
- * RESTful Zold network entry point.
+ * Zold network entry point.
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
- * @todo #4:30min Add methods for API entry points to this class, once we find
- *  the actual API docs for Zold.
  */
-public final class RestfulWts implements Wts {
-    
-    /**
-     * Apache HttpClient which sends the requests.
-     */
-    private final HttpClient client;
+public interface ZoldWts {
 
-    /**
-     * Base URI.
-     */
-    private final URI baseUri;
-    
-    /**
-     * Constructor.
-     * @param baseUri Base URI.
-     */
-    public RestfulWts(final URI baseUri) {
-        this(
-            HttpClients.custom()
-                .setMaxConnPerRoute(10)
-                .setMaxConnTotal(10)
-                .build(),
-            baseUri
-        );
-    }
-    
-    /**
-     * Constructor. We recommend you to use the simple constructor
-     * and let us configure the HttpClient for you. <br><br>
-     * Use this constructor only if you know what you're doing.
-     * 
-     * @param client Given HTTP Client.
-     * @param baseUri Base URI.
-     */
-    public RestfulWts(final HttpClient client, final URI baseUri) {
-        this.client = client;
-        this.baseUri = baseUri;
-    }
 }
