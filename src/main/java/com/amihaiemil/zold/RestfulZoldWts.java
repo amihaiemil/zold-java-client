@@ -35,8 +35,7 @@ import org.apache.http.impl.client.HttpClients;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
- * @todo #4:30min Add methods for API entry points to this class, once we find
- *  the actual API docs for Zold.
+ * @todo #11:30min implement body of interface methods.
  */
 public final class RestfulZoldWts implements ZoldWts {
     
@@ -75,5 +74,16 @@ public final class RestfulZoldWts implements ZoldWts {
     public RestfulZoldWts(final HttpClient client, final URI baseUri) {
         this.client = client;
         this.baseUri = baseUri;
+    }
+
+    /**
+    * Pull the wallet from the network.
+    * @return Wallet object.
+    * @todo #11:30min should avoid using null 
+    *  (it's here for now till the body is implemented)
+    *  maybe should throw an exception when pull fails too
+    */
+    public Wallet pull() {
+        return null;
     }
 }
