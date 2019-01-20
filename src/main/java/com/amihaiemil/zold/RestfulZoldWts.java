@@ -80,8 +80,8 @@ public final class RestfulZoldWts implements ZoldWts {
     * Pull the wallet from the network.
     * @return Wallet object.
     * @todo #11:30min should avoid using null 
-    * (it's here for now till the body is implemented)
-    * maybe should throw an exception when pull fails too
+    *  (it's here for now till the body is implemented)
+    *  maybe should throw an exception when pull fails too
     */
     public Wallet pull() {
         return null;
