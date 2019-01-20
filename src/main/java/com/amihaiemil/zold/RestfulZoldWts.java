@@ -35,8 +35,7 @@ import org.apache.http.impl.client.HttpClients;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
- * @todo #4:30min Add methods for API entry points to this class, once we find
- *  the actual API docs for Zold.
+ * @todo #4 implement body of interface methods.
  */
 public final class RestfulZoldWts implements ZoldWts {
     
@@ -75,5 +74,40 @@ public final class RestfulZoldWts implements ZoldWts {
     public RestfulZoldWts(final HttpClient client, final URI baseUri) {
         this.client = client;
         this.baseUri = baseUri;
+    }
+
+    /**
+    * Pull the wallet from the network.
+    */
+    public void pull() {
+
+    }
+
+    /**
+    * Get the balance of the wallet.
+    * @return Balance
+    */
+    public double balance() {
+        return 0.0;
+    }
+
+    /**
+    * Pay to another wallet.
+    * @param keygap Sender keygap
+    * @param user Recipient user id
+    * @param amount Amount to be sent
+    * @param details The details of transfer
+    */
+    public void pay(String keygap, String user, double amount, String details) {
+
+    }
+
+    /**
+    * Finds all payments that match this query and returns.
+    * @param id Wallet id
+    * @param details Regex of payment details
+    */
+    public void find(final String id, final String details) {
+
     }
 }
