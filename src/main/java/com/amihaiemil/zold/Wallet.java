@@ -20,7 +20,7 @@ public interface Wallet {
     * @param amount Amount to be sent
     * @param details The details of transfer
     * @todo #11:30min solve checkstyle paramternumber error either by cahnging the
-    * method structure or supressing the warning
+    *  method structure or supressing the warning
     */
     void pay(String keygap, String user, double amount, String details);
 
