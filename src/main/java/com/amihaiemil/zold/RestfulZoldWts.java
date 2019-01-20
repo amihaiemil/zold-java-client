@@ -25,55 +25,71 @@
  */
 package com.amihaiemil.zold;
 
-import java.net.URI;
-
-import org.apache.http.client.HttpClient;
+import com.amihaiemil.zold.client.NetworkZoldClient;
+import com.amihaiemil.zold.client.ZoldClient;
+import com.amihaiemil.zold.exception.ZoldException;
+import com.amihaiemil.zold.request.ZoldJobId;
+import com.amihaiemil.zold.request.ZoldJobStatus;
+import com.amihaiemil.zold.request.ZoldPull;
+import com.amihaiemil.zold.request.ZoldWalletId;
+import org.apache.http.HttpHost;
 import org.apache.http.impl.client.HttpClients;
+
+import java.time.Duration;
 
 /**
  * RESTful Zold network entry point.
+ *
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
- * @todo #4:30min Add methods for API entry points to this class, once we find
- *  the actual API docs for Zold.
+ * the actual API docs for Zold.
  */
 public final class RestfulZoldWts implements ZoldWts {
-    
-    /**
-     * Apache HttpClient which sends the requests.
-     */
-    private final HttpClient client;
 
     /**
-     * Base URI.
+     * Zold client.
      */
-    private final URI baseUri;
-    
+    private final ZoldClient client;
+
     /**
      * Constructor.
-     * @param baseUri Base URI.
+     *
+     * @param key API key.
      */
-    public RestfulZoldWts(final URI baseUri) {
-        this(
-            HttpClients.custom()
-                .setMaxConnPerRoute(10)
-                .setMaxConnTotal(10)
-                .build(),
-            baseUri
-        );
+    public RestfulZoldWts(final String key) {
+        this(new NetworkZoldClient(
+                HttpClients.custom()
+                        .setMaxConnPerRoute(10)
+                        .setMaxConnTotal(10)
+                        .build(),
+                HttpHost.create("https://wts.zold.io"), key));
     }
-    
+
     /**
      * Constructor. We recommend you to use the simple constructor
      * and let us configure the HttpClient for you. <br><br>
      * Use this constructor only if you know what you're doing.
-     * 
-     * @param client Given HTTP Client.
-     * @param baseUri Base URI.
+     *
+     * @param client ZoldClient.
      */
-    public RestfulZoldWts(final HttpClient client, final URI baseUri) {
+    public RestfulZoldWts(final ZoldClient client) {
         this.client = client;
-        this.baseUri = baseUri;
+    }
+
+    @Override
+    public String pull() throws ZoldException {
+        return new ZoldPull(this.client, new ZoldJobId()).jobId();
+    }
+
+    @Override
+    public void waitForJob(final String jobId, final Duration timeout)
+            throws ZoldException {
+        new ZoldJobStatus(this.client, jobId, timeout).waitForJob();
+    }
+
+    @Override
+    public String walletId() throws ZoldException {
+        return new ZoldWalletId(this.client).walletId();
     }
 }

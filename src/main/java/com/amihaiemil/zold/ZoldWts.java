@@ -25,6 +25,10 @@
  */
 package com.amihaiemil.zold;
 
+import com.amihaiemil.zold.exception.ZoldException;
+
+import java.time.Duration;
+
 /**
  * Zold network entry point.
  * @author Mihai Andronache (amihaiemil@gmail.com)
@@ -33,4 +37,36 @@ package com.amihaiemil.zold;
  */
 public interface ZoldWts {
 
+    /**
+     * Initiate PULL request. The server will pull your wallet form the network,
+     *  and make it ready for future request. Without this operation you won't
+     *  be able to perform <tt>find()</tt> or <tt>balance()</tt> request.
+     *
+     * The method returns the job ID, which you should wait for completion
+     *  using the method <tt>wait()</tt>.
+     *
+     * @return String Job Id.
+     *
+     * @throws ZoldException exception.
+     */
+    String pull() throws ZoldException;
+
+    /**
+     * Wait for the job to complete. If the job completes successfully, the
+     *  method returns 'OK' in a few seconds (up to a few minutes). If the
+     *  is some error, the exception will be raised.
+     *
+     * @param jobId Job Id.
+     * @param timeout Duration timeout.
+     * @throws ZoldException exception.
+     */
+    void waitForJob(String jobId, Duration timeout) throws ZoldException;
+
+    /**
+     * Get wallet id.
+     *
+     * @return Wallet id
+     * @throws ZoldException exception.
+     */
+    String walletId() throws ZoldException;
 }

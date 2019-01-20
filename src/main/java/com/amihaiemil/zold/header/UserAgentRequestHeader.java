@@ -23,26 +23,24 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.amihaiemil.zold;
+package com.amihaiemil.zold.header;
+
+import org.apache.http.HttpHeaders;
+import org.apache.http.message.BasicHeader;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collections;
 import java.util.Properties;
-import org.apache.http.HttpHeaders;
-import org.apache.http.client.protocol.RequestDefaultHeaders;
-import org.apache.http.message.BasicHeader;
 
 /**
  * User Agent Request Header Interceptor.
  * @author Ammar Atef (a_atef45@yahoo.com)
  * @version $Id$
  * @since 0.0.1
- * @todo #7:30min We should use this class wherever we are
  *  instantiating an HttpClient in order to send the User-Agent
  *  HTTP header.
  */
-final class UserAgentRequestHeader extends RequestDefaultHeaders {
+public final class UserAgentRequestHeader extends BasicHeader {
 
     /**
      * Config properties file.
@@ -57,18 +55,15 @@ final class UserAgentRequestHeader extends RequestDefaultHeaders {
     /**
      * Ctor.
      */
-    UserAgentRequestHeader() {
-        super(Collections.singletonList(
-            new BasicHeader(
-                HttpHeaders.USER_AGENT,
-                String.join(
-                    " ",
-                    "zold-java-client /",
-                    version(),
-                    "See https://github.com/amihaiemil/zold-java-client"
-                )
+    public UserAgentRequestHeader() {
+        super(HttpHeaders.USER_AGENT,
+            String.join(
+                " ",
+                "zold-java-client /",
+                version(),
+                "See https://github.com/amihaiemil/zold-java-client"
             )
-        ));
+        );
     }
 
     /**

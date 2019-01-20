@@ -25,28 +25,249 @@
  */
 package com.amihaiemil.zold;
 
-import java.net.URI;
-
+import com.amihaiemil.zold.client.ZoldClient;
+import com.amihaiemil.zold.exception.ZoldException;
+import org.apache.http.HttpHeaders;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpVersion;
+import org.apache.http.entity.BasicHttpEntity;
+import org.apache.http.message.BasicHttpResponse;
+import org.apache.http.message.BasicStatusLine;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
+import java.io.ByteArrayInputStream;
+import java.time.Duration;
+
+import static org.junit.Assert.*;
+
 /**
- * Unit tests for {@link RestfulZoldNet}.
+ * Unit tests for {@link RestfulZoldWts}.
+ *
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
  */
 public final class RestfulWtsTestCase {
-    
+
     /**
-     * {@link RestfulWts} can be instantiated.
+     * Job Id.
+     */
+    private static final String JOB_ID = "123-456-789";
+
+    /**
+     * {@link RestfulZoldWts} can be instantiated.
      */
     @Test
     public void isInstantiated() {
         MatcherAssert.assertThat(
-            new RestfulZoldWts(URI.create("localhost:8080/zold")),
-            Matchers.instanceOf(ZoldWts.class)
+                new RestfulZoldWts("key"),
+                Matchers.instanceOf(ZoldWts.class)
         );
+    }
+
+    /**
+     * Check that job id is received.
+     *
+     * @throws ZoldException exception.
+     */
+    @Test
+    public void jobIdIsReceived() throws ZoldException {
+        ZoldClient mockClient = new ZoldClient() {
+
+            @Override
+            public HttpResponse execute(final HttpRequest request) {
+                RestfulWtsTestCase.this.assertHeaders(request);
+
+                BasicHttpResponse response = new BasicHttpResponse(
+                        new BasicStatusLine(HttpVersion.HTTP_1_1, 302, ""));
+                response.setHeader("X-Zold-Job", JOB_ID);
+
+                return response;
+            }
+
+            @Override
+            public String key() {
+                return "key";
+            }
+        };
+
+        String jobId = new RestfulZoldWts(mockClient).pull();
+        assertEquals("123-456-789", jobId);
+    }
+
+    /**
+     * Check the case when header is absent.
+     */
+    @Test
+    public void jobIdHeaderIsAbsent() {
+        ZoldClient mockClient = new ZoldClient() {
+
+            @Override
+            public HttpResponse execute(final HttpRequest request) {
+                RestfulWtsTestCase.this.assertHeaders(request);
+
+                return new BasicHttpResponse(
+                        new BasicStatusLine(HttpVersion.HTTP_1_1, 302, ""));
+            }
+
+            @Override
+            public String key() {
+                return "key";
+            }
+        };
+
+        try {
+            new RestfulZoldWts(mockClient).pull();
+            fail("Exception expected");
+        } catch (final ZoldException error) {
+            assertTrue(error.toString().contains(
+                    "No X-Zold-Job header found among"));
+        }
+    }
+
+    /**
+     * Check the case when job is timeout.
+     */
+    @Test
+    public void waitForJobBadTimeout() {
+        ZoldClient mockClient = new ZoldClient() {
+            @Override
+            public HttpResponse execute(final HttpRequest request) {
+                RestfulWtsTestCase.this.assertHeaders(request);
+
+                return RestfulWtsTestCase.this.createHttpResponse("");
+            }
+
+            @Override
+            public String key() {
+                return "key";
+            }
+        };
+
+        try {
+            new RestfulZoldWts(mockClient)
+                    .waitForJob(JOB_ID, Duration.ofMillis(200));
+            fail("Exception expected");
+        } catch (final ZoldException error) {
+            assertTrue(error.toString().contains(
+                    "Timeout should not be less than 500 millis"));
+        }
+    }
+
+    /**
+     * Check the case when job finish successfully.
+     *
+     * @throws ZoldException exception.
+     */
+    @Test
+    public void waitForJobSuccess() throws ZoldException {
+        ZoldClient mockClient = new ZoldClient() {
+            private int count;
+            @Override
+            public HttpResponse execute(final HttpRequest request) {
+                HttpResponse response;
+                RestfulWtsTestCase.this.assertHeaders(request);
+                if (++count < 2) {
+                    response = RestfulWtsTestCase.this
+                            .createHttpResponse("Running");
+                } else {
+                    response = RestfulWtsTestCase.this
+                            .createHttpResponse("OK");
+                }
+                return response;
+            }
+            @Override
+            public String key() {
+                return "key";
+            }
+        };
+
+        new RestfulZoldWts(mockClient).waitForJob(JOB_ID,
+                Duration.ofSeconds(5));
+    }
+
+    /**
+     * Check the case when the job is not finish.
+     */
+    @Test
+    public void waitForJobTooLong() {
+
+        ZoldClient mockClient = new ZoldClient() {
+            @Override
+            public HttpResponse execute(final HttpRequest request) {
+                RestfulWtsTestCase.this.assertHeaders(request);
+                return RestfulWtsTestCase.this.createHttpResponse("Running");
+            }
+
+            @Override
+            public String key() {
+                return "key";
+            }
+        };
+
+        try {
+
+            new RestfulZoldWts(mockClient).waitForJob(JOB_ID,
+                    Duration.ofSeconds(2));
+            fail("Exception expected");
+
+        } catch (final ZoldException error) {
+            assertTrue(error.toString().contains(
+                    "Job 123-456-789 wasn't complete in a 2 seconds"));
+        }
+    }
+
+    /**
+     * Get wallet Id.
+     *
+     * @throws ZoldException exception.
+     */
+    @Test
+    public void walletId() throws ZoldException {
+        ZoldClient mockClient = new ZoldClient() {
+            @Override
+            public HttpResponse execute(final HttpRequest request) {
+                RestfulWtsTestCase.this.assertHeaders(request);
+                return RestfulWtsTestCase.this
+                        .createHttpResponse("walletId_555");
+            }
+
+            @Override
+            public String key() {
+                return "key";
+            }
+        };
+
+        String walletId = new RestfulZoldWts(mockClient).walletId();
+        assertEquals("walletId_555", walletId);
+    }
+
+    /**
+     * Create HTTP response.
+     *
+     * @param body String body
+     * @return HttpResponse httpResponse
+     */
+    private HttpResponse createHttpResponse(final String body) {
+        BasicHttpResponse response = new BasicHttpResponse(
+                new BasicStatusLine(HttpVersion.HTTP_1_1, 200, ""));
+        BasicHttpEntity entity = new BasicHttpEntity();
+        entity.setContent(new ByteArrayInputStream(body.getBytes()));
+        response.setEntity(entity);
+        return response;
+    }
+
+    /**
+     * Assert headers.
+     *
+     * @param request HttpRequest
+     */
+    private void assertHeaders(final HttpRequest request) {
+        assertNotNull(request.getFirstHeader(HttpHeaders.CONTENT_TYPE));
+        assertNotNull(request.getFirstHeader(HttpHeaders.USER_AGENT));
+        assertNotNull(request.getFirstHeader("X-Zold-Wts"));
     }
 }
