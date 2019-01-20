@@ -35,7 +35,7 @@ import org.apache.http.impl.client.HttpClients;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
- * @todo #4 implement body of interface methods.
+ * @todo #11:30min implement body of interface methods.
  */
 public final class RestfulZoldWts implements ZoldWts {
     
@@ -78,36 +78,12 @@ public final class RestfulZoldWts implements ZoldWts {
 
     /**
     * Pull the wallet from the network.
+    * @return Wallet object.
+    * @todo #11:30min should avoid using null 
+    * (it's here for now till the body is implemented)
+    * maybe should throw an exception when pull fails too
     */
-    public void pull() {
-
-    }
-
-    /**
-    * Get the balance of the wallet.
-    * @return Balance
-    */
-    public double balance() {
-        return 0.0;
-    }
-
-    /**
-    * Pay to another wallet.
-    * @param keygap Sender keygap
-    * @param user Recipient user id
-    * @param amount Amount to be sent
-    * @param details The details of transfer
-    */
-    public void pay(String keygap, String user, double amount, String details) {
-
-    }
-
-    /**
-    * Finds all payments that match this query and returns.
-    * @param id Wallet id
-    * @param details Regex of payment details
-    */
-    public void find(final String id, final String details) {
-
+    public Wallet pull() {
+        return null;
     }
 }

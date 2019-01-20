@@ -34,7 +34,8 @@ package com.amihaiemil.zold;
 public interface ZoldWts {
     /**
     * Pull the wallet from the network.
+    * @return Wallet object.
     */
-    void pull();
+    Wallet pull();
 
 }

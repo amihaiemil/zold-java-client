@@ -1,7 +1,7 @@
 package com.amihaiemil.zold;
 
 /**
- * Zold network entry point.
+ * Zold Wallet.
  * @author Ammar Atef (ammar.atef45@gmail.com)
  * @version $Id$
  * @since 0.0.1
@@ -19,7 +19,8 @@ public interface Wallet {
     * @param user Recipient user id
     * @param amount Amount to be sent
     * @param details The details of transfer
-    * @todo #4 solve checkstyle paramternumber error.
+    * @todo #11:30min solve checkstyle paramternumber error either by cahnging the
+    * method structure or supressing the warning
     */
     void pay(String keygap, String user, double amount, String details);
 
