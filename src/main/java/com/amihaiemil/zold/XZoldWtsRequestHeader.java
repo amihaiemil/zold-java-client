@@ -25,26 +25,30 @@
  */
 package com.amihaiemil.zold;
 
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.Test;
+import org.apache.http.client.protocol.RequestDefaultHeaders;
+import org.apache.http.message.BasicHeader;
+
+import java.util.Collections;
 
 /**
- * Unit tests for {@link RestfulZoldWts}.
+ * Specify the X-Zold-WTS authentication header.
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
  */
-public final class RestfulWtsTestCase {
-    
+final class XZoldWtsRequestHeader extends RequestDefaultHeaders {
+
     /**
-     * {@link RestfulZoldWts} can be instantiated.
+     * Ctor.
+     * @param key API key.
      */
-    @Test
-    public void isInstantiated() {
-        MatcherAssert.assertThat(
-            new RestfulZoldWts("213apikey456"),
-            Matchers.instanceOf(ZoldWts.class)
-        );
+    XZoldWtsRequestHeader(final String key) {
+        super(Collections.singletonList(
+            new BasicHeader(
+                "X-Zold-WTS",
+                key
+            )
+        ));
     }
+
 }

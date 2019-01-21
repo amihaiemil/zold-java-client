@@ -38,9 +38,6 @@ import org.apache.http.message.BasicHeader;
  * @author Ammar Atef (a_atef45@yahoo.com)
  * @version $Id$
  * @since 0.0.1
- * @todo #7:30min We should use this class wherever we are
- *  instantiating an HttpClient in order to send the User-Agent
- *  HTTP header.
  */
 final class UserAgentRequestHeader extends RequestDefaultHeaders {
 

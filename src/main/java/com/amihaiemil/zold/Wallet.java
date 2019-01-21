@@ -25,6 +25,8 @@
  */
 package com.amihaiemil.zold;
 
+import java.io.IOException;
+
 /**
  * Zold Wallet.
  * @author Ammar Atef (ammar.atef45@gmail.com)
@@ -32,6 +34,14 @@ package com.amihaiemil.zold;
  * @since 0.0.1
  */
 public interface Wallet {
+
+    /**
+     * Get the wallet's ID.
+     * @return String.
+     * @throws IOException If there's a networking problem.
+     */
+    String getId() throws IOException;
+
     /**
     * Get the balance of the wallet.
     * @return Balance
