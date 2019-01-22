@@ -58,7 +58,7 @@ public final class MockHttpClient implements HttpClient {
     /**
      * Assertions.
      */
-    private final List<AssertRequest> assertions = new ArrayList<>();
+    private final List<AssertRequest> assertions;
 
     /**
      * Ctor.
@@ -67,6 +67,7 @@ public final class MockHttpClient implements HttpClient {
      */
     @SuppressWarnings("unchecked")
     public MockHttpClient(final AssertRequest... assertions) {
+        this.assertions = new ArrayList<>();
         Arrays.stream(assertions).forEach((assertion) -> {
             this.assertions.add(assertion);
         });
