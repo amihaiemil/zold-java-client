@@ -36,13 +36,13 @@ import org.hamcrest.Matchers;
 import org.junit.Test;
 
 /**
- * Tests for {@link AssertRequest}.
+ * Tests for {@link MockHttpClient}.
  *
  * @author George Aristy (george.aristy@gmail.com)
  * @version $Id$
  * @since 0.0.1
  */
-public final class AssertRequestTestCase {
+public final class MockHttpClientTestCase {
     /**
      * Should return the given response if the request meets the given
      * condition.
@@ -57,12 +57,14 @@ public final class AssertRequestTestCase {
             )
         );
         MatcherAssert.assertThat(
-            new AssertRequest(
-                response,
-                new Condition(
-                    "",
-                    // @checkstyle LineLength (1 line)
-                    r -> "http://some.test.com".equals(r.getRequestLine().getUri())
+            new MockHttpClient(
+                new AssertRequest(
+                    response,
+                    new Condition(
+                        "",
+                        // @checkstyle LineLength (1 line)
+                        r -> "http://some.test.com".equals(r.getRequestLine().getUri())
+                    )
                 )
             ).execute(new HttpGet("http://some.test.com")),
             Matchers.is(response)
@@ -76,11 +78,13 @@ public final class AssertRequestTestCase {
      */
     @Test(expected = AssertionError.class)
     public void failIfRequestDoesNotMeetCondition() throws Exception {
-        new AssertRequest(
-            null,
-            new Condition(
-                "",
-                r -> "http://some.test.com".equals(r.getRequestLine().getUri())
+        new MockHttpClient(
+            new AssertRequest(
+                null,
+                new Condition(
+                    "",
+                    r -> "http://some.test.com".equals(r.getRequestLine().getUri())
+                )
             )
         ).execute(new HttpGet("http://test.com"));
     }
@@ -95,12 +99,14 @@ public final class AssertRequestTestCase {
     public void failureMsg() throws Exception {
         final String msg = "Test message";
         try {
-            new AssertRequest(
-                null,
-                new Condition(
-                    msg,
-                    // @checkstyle LineLength (1 line)
-                    r -> "http://some.test.com".equals(r.getRequestLine().getUri())
+            new MockHttpClient(
+                new AssertRequest(
+                    null,
+                    new Condition(
+                        msg,
+                        // @checkstyle LineLength (1 line)
+                        r -> "http://some.test.com".equals(r.getRequestLine().getUri())
+                    )
                 )
             ).execute(new HttpGet("http://test.com"));
         } catch (final AssertionError error) {
