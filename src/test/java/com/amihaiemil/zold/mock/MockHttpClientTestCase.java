@@ -83,7 +83,9 @@ public final class MockHttpClientTestCase {
                 null,
                 new Condition(
                     "",
-                    r -> "http://some.test.com".equals(r.getRequestLine().getUri())
+                    r -> "http://some.test.com".equals(
+                        r.getRequestLine().getUri()
+                    )
                 )
             )
         ).execute(new HttpGet("http://test.com"));

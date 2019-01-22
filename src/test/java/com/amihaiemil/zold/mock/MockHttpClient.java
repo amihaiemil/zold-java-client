@@ -146,7 +146,8 @@ public final class MockHttpClient implements HttpClient {
      * @return HttpResponse if all the cehcks pass.
      */
     private HttpResponse check(final HttpRequest request) {
-        final Collection<Condition> conditions = this.assertions.get(0).conditions();
+        final Collection<Condition> conditions = this.assertions.get(0)
+            .conditions();
         conditions.forEach(cond -> {
             cond.test(request);
         });
