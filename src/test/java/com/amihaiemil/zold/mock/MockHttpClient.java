@@ -26,6 +26,7 @@
 package com.amihaiemil.zold.mock;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -57,7 +58,7 @@ public final class MockHttpClient implements HttpClient {
     /**
      * Assertions.
      */
-    private final List<AssertRequest> assertions;
+    private final List<AssertRequest> assertions = new ArrayList<>();
 
     /**
      * Ctor.
@@ -66,7 +67,9 @@ public final class MockHttpClient implements HttpClient {
      */
     @SuppressWarnings("unchecked")
     public MockHttpClient(final AssertRequest... assertions) {
-        this.assertions = Arrays.asList(assertions);
+        Arrays.stream(assertions).forEach((assertion) -> {
+            this.assertions.add(assertion);
+        });
     }
 
     @Override
@@ -152,7 +155,7 @@ public final class MockHttpClient implements HttpClient {
             cond.test(request);
         });
         final HttpResponse response = this.assertions.get(0).response();
-        this.assertions.remove(response);
+        this.assertions.remove(0);
         return response;
     }
 }
