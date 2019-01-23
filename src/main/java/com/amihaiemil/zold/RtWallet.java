@@ -37,7 +37,7 @@ import java.net.URI;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
- * @todo #19:30min Continue implementing Wallet operations.
+ * @todo #29:30min Continue implementing Wallet operations.
  *  Don't forget to wait for each job completion.
  * @checkstyle ParameterNumber (200 lines)
  */
@@ -84,11 +84,26 @@ final class RtWallet implements Wallet {
     }
 
     @Override
-    public double balance() {
-        throw new UnsupportedOperationException(
-            "Not yet implemented. If you can contribute please, do it at "
-            + "https://github.com/amihaiemil/zold-java-client"
+    public double balance() throws IOException{
+        final HttpGet walletBalance = new HttpGet(
+            URI.create(this.baseUri.toString() + "/balance")
         );
+        try {
+            double value = Double.parseDouble(
+                this.client.execute(
+                    walletBalance,
+                    new ReadString(
+                        new MatchStatus(
+                            walletBalance.getURI(),
+                            HttpStatus.SC_OK
+                        )
+                    )
+                )
+            );
+            return value;
+        } finally {
+            walletBalance.releaseConnection();
+        }
     }
 
     @Override

@@ -46,7 +46,7 @@ public interface Wallet {
     * Get the balance of the wallet.
     * @return Balance
     */
-    double balance();
+    double balance() throws IOException;
 
     /**
     * Pay to another wallet.
