@@ -25,26 +25,38 @@
  */
 package com.amihaiemil.zold;
 
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.Test;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ResponseHandler;
+import org.apache.http.util.EntityUtils;
+
+import java.io.IOException;
 
 /**
- * Unit tests for {@link RestfulZoldWts}.
+ * Handler that returns the response content as a String.
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
  */
-public final class RestfulWtsTestCase {
-    
+final class ReadString implements ResponseHandler<String> {
+
     /**
-     * {@link RestfulZoldWts} can be instantiated.
+     * Handlers to be executed before actually reading the array.
      */
-    @Test
-    public void isInstantiated() {
-        MatcherAssert.assertThat(
-            new RestfulZoldWts("213apikey456"),
-            Matchers.instanceOf(ZoldWts.class)
-        );
+    private final ResponseHandler<HttpResponse> other;
+
+    /**
+     * Ctor.
+     * @param other Handlers to be executed before actually reading the array.
+     */
+    ReadString(final ResponseHandler<HttpResponse> other) {
+        this.other = other;
     }
+
+    @Override
+    public String handleResponse(final HttpResponse httpResponse)
+            throws IOException {
+        final HttpResponse resp = this.other.handleResponse(httpResponse);
+        return EntityUtils.toString(resp.getEntity());
+    }
+
 }

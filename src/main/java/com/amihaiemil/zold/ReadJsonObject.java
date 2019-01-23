@@ -25,26 +25,40 @@
  */
 package com.amihaiemil.zold;
 
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.Test;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ResponseHandler;
+
+import javax.json.Json;
+import javax.json.JsonObject;
+import java.io.IOException;
 
 /**
- * Unit tests for {@link RestfulZoldWts}.
+ * Handler that reads a JsonObject from the response.
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
  */
-public final class RestfulWtsTestCase {
-    
+final class ReadJsonObject implements ResponseHandler<JsonObject> {
+
     /**
-     * {@link RestfulZoldWts} can be instantiated.
+     * Handlers to be executed before actually reading the array.
      */
-    @Test
-    public void isInstantiated() {
-        MatcherAssert.assertThat(
-            new RestfulZoldWts("213apikey456"),
-            Matchers.instanceOf(ZoldWts.class)
-        );
+    private final ResponseHandler<HttpResponse> other;
+
+    /**
+     * Ctor.
+     * @param other Handlers to be executed before actually reading the array.
+     */
+    ReadJsonObject(final ResponseHandler<HttpResponse> other) {
+        this.other = other;
+    }
+
+    @Override
+    public JsonObject handleResponse(final HttpResponse httpResponse)
+        throws IOException {
+        final HttpResponse resp = this.other.handleResponse(httpResponse);
+        return Json.createReader(
+            resp.getEntity().getContent()
+        ).readObject();
     }
 }

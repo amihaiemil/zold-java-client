@@ -23,28 +23,49 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.amihaiemil.zold;
+package com.amihaiemil.zold.mock;
 
+import javax.json.Json;
+import org.apache.http.HttpStatus;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
 /**
- * Unit tests for {@link RestfulZoldWts}.
+ * Unit tests for {@link Response}.
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
  */
-public final class RestfulWtsTestCase {
+public final class ResponseTestCase {
     
     /**
-     * {@link RestfulZoldWts} can be instantiated.
+     * {@link Response} can return its String representation.
      */
     @Test
-    public void isInstantiated() {
+    public void toStringWorks() {
         MatcherAssert.assertThat(
-            new RestfulZoldWts("213apikey456"),
-            Matchers.instanceOf(ZoldWts.class)
+            new Response(
+                HttpStatus.SC_OK,
+                Json.createArrayBuilder()
+                    .add(
+                        Json.createObjectBuilder()
+                            .add("Id", "sha256:e216a057b1cb1efc1")
+                    ).add(
+                        Json.createObjectBuilder()
+                            .add("Id", "sha256:3e314f95dcace0f5e")
+                    ).build().toString()
+            ).toString(),
+            Matchers.allOf(
+                Matchers.startsWith("HTTP/1.1 200 REASON"),
+                Matchers.endsWith(
+                    // @checkstyle LineLength (1 lines)
+                    "[{\"Id\":\"sha256:e216a057b1cb1efc1\"},{\"Id\":\"sha256:3e314f95dcace0f5e\"}]"
+                ),
+                Matchers.containsString("Content-Length: 69"),
+                Matchers.containsString("" + (char) 0x0D + (char) 0x0A)
+            )
         );
     }
+    
 }

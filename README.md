@@ -19,13 +19,13 @@ The library comes as a maven dependency:
 <dependency>
     <groupId>com.amihaiemil.web</groupId>
     <artifactId>zold-java-client</artifactId>
-    <version>not-yet-released</version>
+    <version>0.0.1</version>
 </dependency>
 ```
 
 **In order for it to work, you need to have an implementation of [JSON-P (JSR 374)](https://javaee.github.io/jsonp/index.html) in your classpath (it doesn't come transitively since most people are using Java EE APIs so, chances are it is already provided!).**
 
-If you are not using Maven, you can also download the <a href="#">fat</a> jar.
+If you are not using Maven, you can also download the <a href="https://oss.sonatype.org/service/local/repositories/releases/content/com/amihaiemil/web/zold-java-client/0.0.1/zold-java-client-0.0.1-jar-with-dependencies.jar">fat</a> jar.
 
 ### Contributing 
 
@@ -37,3 +37,10 @@ Make sure the maven build:
 
 passes before making a PR. [Checkstyle](http://checkstyle.sourceforge.net/) will make sure
 you're following our code style and guidlines.
+
+This project is managed by [Zerocracy](http://www.zerocracy.com/), see the 
+[Policy](http://www.zerocracy.com/policy.html) for more details.
+
+Note that we do not have Zerocracy QAs, yet we still try to adhere to the [QA
+ rules](http://www.zerocracy.com/policy.html#42) as much as possible (we won't block any PRs for cosmetic stuff such 
+ as commit messages, though).

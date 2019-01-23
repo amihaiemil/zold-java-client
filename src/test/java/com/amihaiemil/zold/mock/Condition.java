@@ -23,28 +23,49 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.amihaiemil.zold;
+package com.amihaiemil.zold.mock;
 
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.Test;
+import java.util.function.Predicate;
+import org.apache.http.HttpRequest;
+import org.junit.Assert;
 
 /**
- * Unit tests for {@link RestfulZoldWts}.
- * @author Mihai Andronache (amihaiemil@gmail.com)
+ * Condition that an {@link HttpRequest} must satisfy.
+ *
+ * @author George Aristy (george.aristy@gmail.com)
  * @version $Id$
  * @since 0.0.1
  */
-public final class RestfulWtsTestCase {
-    
+public final class Condition {
     /**
-     * {@link RestfulZoldWts} can be instantiated.
+     * The failure message.
      */
-    @Test
-    public void isInstantiated() {
-        MatcherAssert.assertThat(
-            new RestfulZoldWts("213apikey456"),
-            Matchers.instanceOf(ZoldWts.class)
-        );
+    private final String msg;
+    /**
+     * The test that the http request must satisfy.
+     */
+    private final Predicate<HttpRequest> predicate;
+
+    /**
+     * Ctor.
+     * 
+     * @param msg The failure message.
+     * @param test The test.
+     */
+    public Condition(final String msg, final Predicate<HttpRequest> test) {
+        this.msg = msg;
+        this.predicate = test;
+    }
+
+    /**
+     * Tests the request.
+     * 
+     * @param request The request to test.
+     * @throws AssertionError if the request does not satisfy this condition
+     */
+    public void test(final HttpRequest request) {
+        if (!this.predicate.test(request)) {
+            Assert.fail(this.msg);
+        }
     }
 }

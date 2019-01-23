@@ -25,6 +25,8 @@
  */
 package com.amihaiemil.zold;
 
+import java.io.IOException;
+
 /**
  * Zold network entry point.
  * @author Mihai Andronache (amihaiemil@gmail.com)
@@ -35,7 +37,8 @@ public interface ZoldWts {
     /**
     * Pull the wallet from the network.
     * @return Wallet object.
+    * @throws IOException If there's some networking problem.
     */
-    Wallet pull();
+    Wallet pull() throws IOException;
 
 }

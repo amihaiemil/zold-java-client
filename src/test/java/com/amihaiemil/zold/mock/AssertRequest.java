@@ -23,28 +23,52 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.amihaiemil.zold;
+package com.amihaiemil.zold.mock;
 
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.Test;
+import org.apache.http.HttpResponse;
+
+import java.util.Arrays;
+import java.util.Collection;
 
 /**
- * Unit tests for {@link RestfulZoldWts}.
+ * Assert for an HttpRequest under test.
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
- * @since 0.0.1
+ * @since 0.0.2
  */
-public final class RestfulWtsTestCase {
-    
+public final class AssertRequest {
     /**
-     * {@link RestfulZoldWts} can be instantiated.
+     * The response to return if all conditions are met.
      */
-    @Test
-    public void isInstantiated() {
-        MatcherAssert.assertThat(
-            new RestfulZoldWts("213apikey456"),
-            Matchers.instanceOf(ZoldWts.class)
-        );
+    private final HttpResponse response;
+    /**
+     * Conditions against which to validate requests.
+     */
+    private final Collection<Condition> conditions;
+
+    /**
+     * Ctor.
+     * @param resp Given response.
+     * @param conds Given conditions.
+     */
+    public AssertRequest(final HttpResponse resp, final Condition... conds) {
+        this.response = resp;
+        this.conditions = Arrays.asList(conds);
+    }
+
+    /**
+     * Return the response.
+     * @return HttpResponse.
+     */
+    public HttpResponse response() {
+        return this.response;
+    }
+
+    /**
+     * Return the conditions.
+     * @return Collection of Condition.
+     */
+    public Collection<Condition> conditions() {
+        return this.conditions;
     }
 }

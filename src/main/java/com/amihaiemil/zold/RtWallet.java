@@ -25,77 +25,88 @@
  */
 package com.amihaiemil.zold;
 
-import java.io.IOException;
-import java.net.URI;
-
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.HttpClients;
+
+import java.io.IOException;
+import java.net.URI;
 
 /**
- * RESTful Zold network entry point.
+ * RESTful Zold wallet.
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
+ * @todo #19:30min Continue implementing Wallet operations.
+ *  Don't forget to wait for each job completion.
+ * @checkstyle ParameterNumber (200 lines)
  */
-public final class RestfulZoldWts implements ZoldWts {
-    
+final class RtWallet implements Wallet {
+
     /**
-     * Apache HttpClient which sends the requests.
+     * API client.
      */
     private final HttpClient client;
 
     /**
-     * Base URI.
+     * Base uri.
      */
-    private final URI baseUri = URI.create("https://wts.zold.io");
-    
+    private final URI baseUri;
+
     /**
-     * Constructor.
-     * @param key API kei. Get it at https://wts.zold.io/api.
+     * Ctor.
+     * @param client API Client.
+     * @param baseUri URI.
      */
-    public RestfulZoldWts(final String key) {
-        this(
-            HttpClients.custom()
-                .setMaxConnPerRoute(10)
-                .setMaxConnTotal(10)
-                .addInterceptorFirst(new XZoldWtsRequestHeader(key))
-                .addInterceptorFirst(new UserAgentRequestHeader())
-                .build()
-        );
-    }
-    
-    /**
-     * Constructor. We recommend you to use the simple constructor
-     * and let us configure the HttpClient for you. <br><br>
-     * Use this constructor only if you know what you're doing.
-     * 
-     * @param client Given HTTP Client.
-     */
-    public RestfulZoldWts(final HttpClient client) {
+    RtWallet(final HttpClient client, final URI baseUri) {
         this.client = client;
+        this.baseUri = baseUri;
     }
 
     @Override
-    public Wallet pull() throws IOException {
-        final HttpGet pull = new HttpGet(
-            URI.create(this.baseUri.toString() + "/pull")
+    public String getId() throws IOException {
+        final HttpGet walletId = new HttpGet(
+            URI.create(this.baseUri.toString() + "/id")
         );
         try {
             return this.client.execute(
-                pull,
-                new WaitForWallet(
+                walletId,
+                new ReadString(
                     new MatchStatus(
-                        pull.getURI(),
-                        HttpStatus.SC_MOVED_TEMPORARILY
-                    ),
-                    this.client,
-                    this.baseUri
+                        walletId.getURI(),
+                        HttpStatus.SC_OK
+                    )
                 )
             );
         } finally {
-            pull.releaseConnection();
+            walletId.releaseConnection();
         }
+    }
+
+    @Override
+    public double balance() {
+        throw new UnsupportedOperationException(
+            "Not yet implemented. If you can contribute please, do it at "
+            + "https://github.com/amihaiemil/zold-java-client"
+        );
+    }
+
+    @Override
+    public void pay(
+        final String keygap, final String user,
+        final double amount, final String details
+    ) {
+        throw new UnsupportedOperationException(
+            "Not yet implemented. If you can contribute please, do it at "
+            + "https://github.com/amihaiemil/zold-java-client"
+        );
+    }
+
+    @Override
+    public void find(final String id, final String details) {
+        throw new UnsupportedOperationException(
+            "Not yet implemented. If you can contribute please, do it at "
+            + "https://github.com/amihaiemil/zold-java-client"
+        );
     }
 }

@@ -23,28 +23,60 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.amihaiemil.zold;
+package com.amihaiemil.zold.mock;
 
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.Test;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+import org.apache.http.HttpEntityEnclosingRequest;
+import org.apache.http.HttpRequest;
 
 /**
- * Unit tests for {@link RestfulZoldWts}.
- * @author Mihai Andronache (amihaiemil@gmail.com)
+ * Json Array payload of an HttpRequest.
+ *
+ * @author Boris Kuzmic (boris.kuzmic@gmail.com)
  * @version $Id$
  * @since 0.0.1
  */
-public final class RestfulWtsTestCase {
-    
+public final class ArrayPayloadOf implements Iterator<JsonObject> {
+
     /**
-     * {@link RestfulZoldWts} can be instantiated.
+     * List of JsonObjects.
      */
-    @Test
-    public void isInstantiated() {
-        MatcherAssert.assertThat(
-            new RestfulZoldWts("213apikey456"),
-            Matchers.instanceOf(ZoldWts.class)
-        );
+    private final Iterator<JsonObject> resources;
+
+    /**
+     * Ctor.
+     *
+     * @param request The http request
+     * @throws IllegalStateException if the request's payload cannot be read
+     */
+    public ArrayPayloadOf(final HttpRequest request) {
+        try (JsonReader reader = Json.createReader(
+            ((HttpEntityEnclosingRequest) request).getEntity().getContent())) {
+            if (request instanceof HttpEntityEnclosingRequest) {
+                this.resources =
+                    reader.readArray().getValuesAs(JsonObject.class).iterator();
+            } else {
+                this.resources = new ArrayList<JsonObject>().iterator();
+            }
+        } catch (final IOException ex) {
+            throw new IllegalStateException(
+                "Cannot read request payload", ex
+            );
+        }
+    }
+
+    @Override
+    public boolean hasNext() {
+        return this.resources.hasNext();
+    }
+
+    @Override
+    public JsonObject next() {
+        return this.resources.next();
     }
 }

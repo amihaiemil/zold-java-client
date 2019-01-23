@@ -25,26 +25,50 @@
  */
 package com.amihaiemil.zold;
 
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.Test;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ResponseHandler;
+
+import java.net.URI;
 
 /**
- * Unit tests for {@link RestfulZoldWts}.
+ * An Apache ResponseHandler that tries to match the Response's status code
+ * with the expected one.
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
  */
-public final class RestfulWtsTestCase {
-    
+final class MatchStatus implements ResponseHandler<HttpResponse> {
+
     /**
-     * {@link RestfulZoldWts} can be instantiated.
+     * Called URI.
      */
-    @Test
-    public void isInstantiated() {
-        MatcherAssert.assertThat(
-            new RestfulZoldWts("213apikey456"),
-            Matchers.instanceOf(ZoldWts.class)
-        );
+    private final URI called;
+
+    /**
+     * Expected status.
+     */
+    private final int expected;
+
+    /**
+     * Ctor.
+     * @param called Called URI.
+     * @param expected Expected Http status code.
+     */
+    MatchStatus(final URI called, final int expected) {
+        this.called = called;
+        this.expected = expected;
     }
+
+    @Override
+    public HttpResponse handleResponse(final HttpResponse response) {
+        final int actual = response.getStatusLine().getStatusCode();
+        if(actual != this.expected) {
+            throw new UnexpectedResponseException(
+                this.called.toString(), actual,
+                this.expected, new PayloadOf(response)
+            );
+        }
+        return response;
+    }
+
 }

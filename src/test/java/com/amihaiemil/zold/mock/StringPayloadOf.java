@@ -23,28 +23,54 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package com.amihaiemil.zold;
+package com.amihaiemil.zold.mock;
 
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.Test;
+import java.io.IOException;
+import org.apache.http.HttpEntityEnclosingRequest;
+import org.apache.http.HttpRequest;
+import org.apache.http.util.EntityUtils;
 
 /**
- * Unit tests for {@link RestfulZoldWts}.
- * @author Mihai Andronache (amihaiemil@gmail.com)
+ * String payload of an HttpRequest.
+ *
+ * @author Boris Kuzmic (boris.kuzmic@gmail.com)
  * @version $Id$
  * @since 0.0.1
  */
-public final class RestfulWtsTestCase {
-    
+public final class StringPayloadOf {
+
     /**
-     * {@link RestfulZoldWts} can be instantiated.
+     * Payload as String.
      */
-    @Test
-    public void isInstantiated() {
-        MatcherAssert.assertThat(
-            new RestfulZoldWts("213apikey456"),
-            Matchers.instanceOf(ZoldWts.class)
-        );
+    private final String stringPayload;
+
+    /**
+     * Ctor.
+     *
+     * @param request The http request
+     * @throws IllegalStateException if the request's payload cannot be read
+     */
+    public StringPayloadOf(final HttpRequest request) {
+        try {
+            if (request instanceof HttpEntityEnclosingRequest) {
+                this.stringPayload = EntityUtils.toString(
+                    ((HttpEntityEnclosingRequest) request).getEntity()
+                );
+            } else {
+                this.stringPayload = "";
+            }
+        } catch (final IOException ex) {
+            throw new IllegalStateException(
+                "Cannot read request payload", ex
+            );
+        }
+    }
+
+    /**
+     * Returns payload value as String.
+     * @return Payload as String.
+     */
+    public String value() {
+        return this.stringPayload;
     }
 }
