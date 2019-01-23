@@ -45,6 +45,7 @@ public interface Wallet {
     /**
     * Get the balance of the wallet.
     * @return Balance
+    * @throws IOException If there's a networking problem.
     */
     double balance() throws IOException;
 
