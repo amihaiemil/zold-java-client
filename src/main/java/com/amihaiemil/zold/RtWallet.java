@@ -37,7 +37,7 @@ import java.net.URI;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
- * @todo #29:30min Continue implementing Wallet operations.
+ * @todo #19:30min Continue implementing Wallet operations.
  *  Don't forget to wait for each job completion.
  * @checkstyle ParameterNumber (200 lines)
  */
