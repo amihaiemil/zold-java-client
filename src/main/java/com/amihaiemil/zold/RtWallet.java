@@ -89,7 +89,7 @@ final class RtWallet implements Wallet {
             URI.create(this.baseUri.toString() + "/balance")
         );
         try {
-            double value = Double.parseDouble(
+            return Double.parseDouble(
                 this.client.execute(
                     walletBalance,
                     new ReadString(
@@ -100,7 +100,6 @@ final class RtWallet implements Wallet {
                     )
                 )
             );
-            return value;
         } finally {
             walletBalance.releaseConnection();
         }
