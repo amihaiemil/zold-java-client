@@ -35,6 +35,8 @@ import org.apache.http.client.utils.URIBuilder;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Duration;
+import java.time.Instant;
 
 /**
  * Fetch a wallet, after checking the job's status.
@@ -58,6 +60,11 @@ final class WaitForWallet implements ResponseHandler<Wallet> {
      * Base uri.
      */
     private final URI baseUri;
+
+    /**
+     * Time to wait for job to be finished.
+     */
+    private static final Duration TIME_TO_WAIT = Duration.ofMinutes(5);
 
     /**
      * Ctor.
@@ -87,25 +94,91 @@ final class WaitForWallet implements ResponseHandler<Wallet> {
             );
         } else {
             try {
-                Thread.sleep(1000);
-                final URIBuilder uri = new URIBuilder(
-                    this.baseUri.toString() + "/job"
-                ).addParameter("id", jobId);
-                final HttpGet status = new HttpGet(uri.build());
-                this.client.execute(
-                    status,
-                    new MatchStatus(
-                        status.getURI(),
-                        HttpStatus.SC_OK
-                    )
-                );
+                final Instant start = Instant.now();
+
+                do {
+                    Thread.sleep(1000);
+
+                    if (this.jobFinished(jobId)) {
+                        break;
+                    }
+
+                    if (this.hasNoTimeToWait(start)) {
+                        throw new IllegalStateException(
+                                "Can't wait for job " + jobId + " during "
+                                + TIME_TO_WAIT.toMinutes() + " minutes");
+                    }
+                } while (true);
+
                 return new RtWallet(this.client, this.baseUri);
             } catch (final InterruptedException | URISyntaxException ex) {
                 throw new IllegalStateException(
-                    "Exception while waiting for Wallet!", ex
+                        "Exception while waiting for Wallet!", ex
                 );
             }
-
         }
+    }
+
+    /**
+     * Calculates if the job finished.
+     *
+     * @param jobId Job id
+     * @return False if the job was not finished. True if the job was finished.
+     * @throws IOException in case of some network issue
+     * @throws URISyntaxException in case of wrong url formatting
+     */
+    private boolean jobFinished(final String jobId)
+            throws IOException, URISyntaxException {
+        final String status = this.jobStatus(jobId);
+        final boolean result;
+
+        if ("Running".equals(status)) {
+            result = false;
+        } else if ("OK".equals(status)) {
+            result = true;
+        } else {
+            throw new IllegalStateException(
+                    "Got unknown job status from Zold network: "
+                            + status + ", jobId = " + jobId);
+        }
+
+        return result;
+    }
+
+    /**
+     * Returns job status.
+     *
+     * @param jobId Job id.
+     *
+     * @return Http response with job status
+     * @throws URISyntaxException in case of wrong url formatting
+     * @throws IOException in case of some network issue
+     */
+    private String jobStatus(final String jobId)
+            throws URISyntaxException, IOException {
+        final URIBuilder uri = new URIBuilder(
+                this.baseUri.toString() + "/job"
+        ).addParameter("id", jobId);
+        final HttpGet status = new HttpGet(uri.build());
+        return this.client.execute(
+                status,
+                new ReadString(
+                        new MatchStatus(
+                                status.getURI(),
+                                HttpStatus.SC_OK
+                        )
+                )
+        );
+    }
+
+    /**
+     * Calculates if there is no time to wait.
+     *
+     * @param start Initial start time
+     * @return False if there is time to wait. True - if not
+     */
+    private boolean hasNoTimeToWait(final Instant start) {
+        final Instant finish = start.plus(TIME_TO_WAIT);
+        return Instant.now().isAfter(finish);
     }
 }
