@@ -62,6 +62,7 @@ public final class RestfulZoldWts implements ZoldWts {
                 .setMaxConnTotal(10)
                 .addInterceptorFirst(new XZoldWtsRequestHeader(key))
                 .addInterceptorFirst(new UserAgentRequestHeader())
+                .disableRedirectHandling()
                 .build()
         );
     }
