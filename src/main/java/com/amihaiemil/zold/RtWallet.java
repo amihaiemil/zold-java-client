@@ -28,6 +28,9 @@ package com.amihaiemil.zold;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
 
 import java.io.IOException;
 import java.net.URI;
@@ -110,11 +113,33 @@ final class RtWallet implements Wallet {
     public void pay(
         final String keygap, final String user,
         final double amount, final String details
-    ) {
-        throw new UnsupportedOperationException(
-            "Not yet implemented. If you can contribute please, do it at "
-            + "https://github.com/amihaiemil/zold-java-client"
+    ) throws IOException {
+        
+        final HttpPost pay = new HttpPost(
+            URI.create(this.baseUri.toString() + "/do-pay")
         );
+        StringBuilder payload = new StringBuilder();
+        payload.append("{");
+        payload.append("\"keygap\":" + keygap + ",");
+        payload.append("\"bnf\":" + user + ",");
+        payload.append("\"amount\":" + amount + ",");
+        payload.append("\"details\":" + details);
+        payload.append("}");
+        pay.setEntity(new StringEntity(payload.toString(),
+             ContentType.APPLICATION_JSON));
+        try {
+            this.client.execute(
+                pay,
+                new ReadString(
+                    new MatchStatus(
+                        pay.getURI(),
+                        HttpStatus.SC_MOVED_TEMPORARILY
+                    )
+                )
+            );
+        } finally {
+            pay.releaseConnection();
+        }
     }
 
     @Override
