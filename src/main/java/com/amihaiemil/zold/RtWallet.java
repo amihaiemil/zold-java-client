@@ -120,11 +120,11 @@ final class RtWallet implements Wallet {
             URI.create(this.baseUri.toString() + "/do-pay")
         );
         String payload = Json.createObjectBuilder()
-        .add("keygap", keygap)
-        .add("bnf", user)
-        .add("amount", amount)
-        .add("details", details)
-        .build().toString();
+            .add("keygap", keygap)
+            .add("bnf", user)
+            .add("amount", amount)
+            .add("details", details)
+            .build().toString();
         pay.setEntity(new StringEntity(payload.toString(),
              ContentType.APPLICATION_JSON));
         try {
