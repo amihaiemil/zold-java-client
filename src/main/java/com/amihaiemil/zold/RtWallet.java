@@ -42,8 +42,7 @@ import javax.json.Json;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
- * @todo #29:30min Continue implementing Wallet operations.
- *  Don't forget to wait for each job completion.
+ * @todo #33:30min implement the find method as in zold ruby sdk.
  * @todo #29:30min Write unit test for all wallet operations.
  * @checkstyle ParameterNumber (200 lines)
  */
