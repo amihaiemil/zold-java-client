@@ -35,6 +35,8 @@ import org.apache.http.entity.StringEntity;
 import java.io.IOException;
 import java.net.URI;
 
+import javax.json.Json;
+
 /**
  * RESTful Zold wallet.
  * @author Mihai Andronache (amihaiemil@gmail.com)
@@ -118,13 +120,12 @@ final class RtWallet implements Wallet {
         final HttpPost pay = new HttpPost(
             URI.create(this.baseUri.toString() + "/do-pay")
         );
-        StringBuilder payload = new StringBuilder();
-        payload.append("{");
-        payload.append("\"keygap\":" + keygap + ",");
-        payload.append("\"bnf\":" + user + ",");
-        payload.append("\"amount\":" + amount + ",");
-        payload.append("\"details\":" + details);
-        payload.append("}");
+        String payload = Json.createObjectBuilder()
+        .add("keygap", keygap)
+        .add("bnf", user)
+        .add("amount", amount)
+        .add("details", details)
+        .build().toString();
         pay.setEntity(new StringEntity(payload.toString(),
              ContentType.APPLICATION_JSON));
         try {
