@@ -116,7 +116,7 @@ final class RtWallet implements Wallet {
         final double amount, final String details
     ) throws IOException {
         
-        final HttpPost pay = new HttpPost(
+        final HttpPost request = new HttpPost(
             URI.create(this.baseUri.toString() + "/do-pay")
         );
         String payload = Json.createObjectBuilder()
@@ -125,20 +125,20 @@ final class RtWallet implements Wallet {
             .add("amount", amount)
             .add("details", details)
             .build().toString();
-        pay.setEntity(new StringEntity(payload.toString(),
+        request.setEntity(new StringEntity(payload.toString(),
              ContentType.APPLICATION_JSON));
         try {
             this.client.execute(
-                pay,
+                request,
                 new ReadString(
                     new MatchStatus(
-                        pay.getURI(),
+                        request.getURI(),
                         HttpStatus.SC_MOVED_TEMPORARILY
                     )
                 )
             );
         } finally {
-            pay.releaseConnection();
+            request.releaseConnection();
         }
     }
 
