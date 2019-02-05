@@ -55,17 +55,19 @@ public interface Wallet {
     * @param user Recipient user id
     * @param amount Amount to be sent
     * @param details The details of transfer
+    * @throws IOException If there's a networking problem.
     * @checkstyle ParameterNumber (5 lines)
     */
     void pay(
         final String keygap, final String user,
         final double amount, final String details
-    );
+    )throws IOException;
 
     /**
     * Finds all payments that match this query and returns.
     * @param id Wallet id
     * @param details Regex of payment details
+    * @throws IOException If there's a networking problem.
     */
-    void find(String id, String details);
+    void find(String id, String details)throws IOException;
 }

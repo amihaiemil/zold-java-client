@@ -28,17 +28,21 @@ package com.amihaiemil.zold;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
 
 import java.io.IOException;
 import java.net.URI;
+
+import javax.json.Json;
 
 /**
  * RESTful Zold wallet.
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
- * @todo #29:30min Continue implementing Wallet operations.
- *  Don't forget to wait for each job completion.
+ * @todo #33:30min implement the find method as in zold ruby sdk.
  * @todo #29:30min Write unit test for all wallet operations.
  * @checkstyle ParameterNumber (200 lines)
  */
@@ -110,11 +114,32 @@ final class RtWallet implements Wallet {
     public void pay(
         final String keygap, final String user,
         final double amount, final String details
-    ) {
-        throw new UnsupportedOperationException(
-            "Not yet implemented. If you can contribute please, do it at "
-            + "https://github.com/amihaiemil/zold-java-client"
+    ) throws IOException {
+        
+        final HttpPost request = new HttpPost(
+            URI.create(this.baseUri.toString() + "/do-pay")
         );
+        String payload = Json.createObjectBuilder()
+            .add("keygap", keygap)
+            .add("bnf", user)
+            .add("amount", amount)
+            .add("details", details)
+            .build().toString();
+        request.setEntity(new StringEntity(payload.toString(),
+             ContentType.APPLICATION_JSON));
+        try {
+            this.client.execute(
+                request,
+                new ReadString(
+                    new MatchStatus(
+                        request.getURI(),
+                        HttpStatus.SC_MOVED_TEMPORARILY
+                    )
+                )
+            );
+        } finally {
+            request.releaseConnection();
+        }
     }
 
     @Override
