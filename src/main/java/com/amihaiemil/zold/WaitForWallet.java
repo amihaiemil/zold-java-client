@@ -109,13 +109,14 @@ final class WaitForWallet implements ResponseHandler<Wallet> {
                                 + TIME_TO_WAIT.toMinutes() + " minutes");
                     }
                 } while (true);
-
-                return new RtWallet(this.client, this.baseUri);
-            } catch (final InterruptedException | URISyntaxException ex) {
+            } catch (final URISyntaxException ex) {
                 throw new IllegalStateException(
                         "Exception while waiting for Wallet!", ex
                 );
+            } catch (final InterruptedException iex) {
+                Thread.currentThread().interrupt();
             }
+            return new RtWallet(this.client, this.baseUri);
         }
     }
 
