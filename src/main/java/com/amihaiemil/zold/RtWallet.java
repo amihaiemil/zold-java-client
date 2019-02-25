@@ -29,13 +29,16 @@ import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 
 import javax.json.Json;
+import javax.json.JsonArray;
 
 /**
  * RESTful Zold wallet.
@@ -143,10 +146,27 @@ final class RtWallet implements Wallet {
     }
 
     @Override
-    public void find(final String id, final String details) {
-        throw new UnsupportedOperationException(
-            "Not yet implemented. If you can contribute please, do it at "
-            + "https://github.com/amihaiemil/zold-java-client"
+    public JsonArray find(
+            final String id, final String details
+    ) throws IOException, URISyntaxException {
+        URIBuilder builder = new URIBuilder(this.baseUri.toString() + "/find");
+        builder.setParameter("bnf", id);
+        builder.setParameter("details", details);
+        final HttpGet request = new HttpGet(
+                builder.build()
         );
+        try {
+            return this.client.execute(
+                    request,
+                    new ReadJsonArray(
+                            new MatchStatus(
+                                    request.getURI(),
+                                    HttpStatus.SC_OK
+                            )
+                    )
+            );
+        } finally {
+            request.releaseConnection();
+        }
     }
 }

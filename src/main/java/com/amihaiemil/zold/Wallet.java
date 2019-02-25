@@ -25,7 +25,9 @@
  */
 package com.amihaiemil.zold;
 
+import javax.json.JsonArray;
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 /**
  * Zold Wallet.
@@ -64,10 +66,13 @@ public interface Wallet {
     )throws IOException;
 
     /**
-    * Finds all payments that match this query and returns.
-    * @param id Wallet id
-    * @param details Regex of payment details
-    * @throws IOException If there's a networking problem.
-    */
-    void find(String id, String details)throws IOException;
+     * Finds all payments that match this query and returns.
+     * @return Array of found transactions.
+     * @param id Wallet id
+     * @param details Regex of payment details
+     * @throws IOException If there's a networking problem.
+     * @throws URISyntaxException If there's a problem building URI.
+     */
+    JsonArray find(String id, String details)
+            throws IOException, URISyntaxException;
 }
