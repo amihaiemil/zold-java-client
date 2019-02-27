@@ -92,19 +92,17 @@ final class RtWallet implements Wallet {
     }
 
     @Override
-    public double balance() throws IOException{
+    public String balance() throws IOException{
         final HttpGet walletBalance = new HttpGet(
             URI.create(this.baseUri.toString() + "/balance")
         );
         try {
-            return Double.parseDouble(
-                this.client.execute(
-                    walletBalance,
-                    new ReadString(
-                        new MatchStatus(
-                            walletBalance.getURI(),
-                            HttpStatus.SC_OK
-                        )
+            return this.client.execute(
+                walletBalance,
+                new ReadString(
+                    new MatchStatus(
+                        walletBalance.getURI(),
+                        HttpStatus.SC_OK
                     )
                 )
             );
@@ -116,7 +114,7 @@ final class RtWallet implements Wallet {
     @Override
     public void pay(
         final String keygap, final String user,
-        final double amount, final String details
+        final String amount, final String details
     ) throws IOException {
         
         final HttpPost request = new HttpPost(

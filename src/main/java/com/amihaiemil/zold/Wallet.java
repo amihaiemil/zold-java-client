@@ -49,7 +49,7 @@ public interface Wallet {
     * @return Balance
     * @throws IOException If there's a networking problem.
     */
-    double balance() throws IOException;
+    String balance() throws IOException;
 
     /**
     * Pay to another wallet.
@@ -62,7 +62,7 @@ public interface Wallet {
     */
     void pay(
         final String keygap, final String user,
-        final double amount, final String details
+        final String amount, final String details
     )throws IOException;
 
     /**
