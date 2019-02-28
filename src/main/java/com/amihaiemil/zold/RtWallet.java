@@ -45,7 +45,6 @@ import javax.json.JsonArray;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
- * @todo #33:30min implement the find method as in zold ruby sdk.
  * @todo #29:30min Write unit test for all wallet operations.
  * @checkstyle ParameterNumber (200 lines)
  */
