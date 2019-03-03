@@ -26,9 +26,11 @@
 package com.amihaiemil.zold.mock;
 
 import java.io.IOException;
-import org.apache.http.HttpEntityEnclosingRequest;
-import org.apache.http.HttpRequest;
-import org.apache.http.util.EntityUtils;
+
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.ClassicHttpRequest;
+import org.apache.hc.core5.http.ParseException;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
 
 /**
  * String payload of an HttpRequest.
@@ -49,13 +51,15 @@ public final class StringPayloadOf {
      *
      * @param request The http request
      * @throws IllegalStateException if the request's payload cannot be read
+     * @throws ParseException Parsing error of payload.
      */
-    public StringPayloadOf(final HttpRequest request) {
+    public StringPayloadOf(
+        final ClassicHttpRequest request
+    ) throws ParseException {
         try {
-            if (request instanceof HttpEntityEnclosingRequest) {
-                this.stringPayload = EntityUtils.toString(
-                    ((HttpEntityEnclosingRequest) request).getEntity()
-                );
+            final HttpEntity entity = request.getEntity();
+            if (entity != null) {
+                this.stringPayload = EntityUtils.toString(entity);
             } else {
                 this.stringPayload = "";
             }

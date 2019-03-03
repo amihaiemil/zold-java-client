@@ -26,6 +26,7 @@
 package com.amihaiemil.zold;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 /**
  * Zold network entry point.
@@ -38,7 +39,8 @@ public interface ZoldWts {
     * Pull the wallet from the network.
     * @return Wallet object.
     * @throws IOException If there's some networking problem.
+    * @throws URISyntaxException If there's a problem building URI.
     */
-    Wallet pull() throws IOException;
+    Wallet pull() throws IOException, URISyntaxException;
 
 }

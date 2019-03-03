@@ -30,22 +30,21 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.WritableByteChannel;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.apache.http.Header;
-import org.apache.http.HeaderIterator;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.ProtocolVersion;
-import org.apache.http.StatusLine;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.message.BasicHttpResponse;
-import org.apache.http.message.BasicStatusLine;
-import org.apache.http.params.HttpParams;
+
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.Header;
+import org.apache.hc.core5.http.HttpResponse;
+import org.apache.hc.core5.http.HttpStatus;
+import org.apache.hc.core5.http.ProtocolVersion;
+import org.apache.hc.core5.http.io.entity.StringEntity;
+import org.apache.hc.core5.http.message.BasicClassicHttpResponse;
+import org.apache.hc.core5.http.message.StatusLine;
+import org.apache.hc.client5.http.impl.classic.BasicHttpClientResponseHandler;
 
 /**
  * An {@link HttpResponse} suitable for tests. Can be configured with 
@@ -60,7 +59,7 @@ public final class Response implements HttpResponse {
     /**
      * Its backbone, holding what we need.
      */
-    private HttpResponse backbone;
+    private ClassicHttpResponse backbone;
     
     /**
      * Ctor.
@@ -79,11 +78,8 @@ public final class Response implements HttpResponse {
      * @param jsonPayload The json payload
      */
     public Response(final int status, final String jsonPayload) {
-        this.backbone = new BasicHttpResponse(
-            new BasicStatusLine(
-                new ProtocolVersion("HTTP", 1, 1), status, "REASON"
-            )
-        );
+        this.backbone = new BasicClassicHttpResponse(status, "REASON");
+        this.backbone.setVersion(new ProtocolVersion("HTTP", 1, 1));
         this.backbone.setEntity(
             new StringEntity(
                 jsonPayload, ContentType.APPLICATION_JSON
@@ -97,44 +93,23 @@ public final class Response implements HttpResponse {
     }
 
     @Override
-    public StatusLine getStatusLine() {
-        return this.backbone.getStatusLine();
-    }
-
-    @Override
-    public void setStatusLine(final StatusLine statusline) {
+    public int getCode() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void setStatusLine(final ProtocolVersion ver, final int code) {
+    public void setCode(final int code) throws IllegalStateException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void setStatusLine(final ProtocolVersion ver, final int code,
-        final String reason) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void setStatusCode(final int code) throws IllegalStateException {
+    public String getReasonPhrase() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public void setReasonPhrase(final String reason)
         throws IllegalStateException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public HttpEntity getEntity() {
-        return this.backbone.getEntity();
-    }
-
-    @Override
-    public void setEntity(final HttpEntity entity) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -149,7 +124,17 @@ public final class Response implements HttpResponse {
     }
 
     @Override
-    public ProtocolVersion getProtocolVersion() {
+    public ProtocolVersion getVersion() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void setVersion(final ProtocolVersion version) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public int countHeaders(final String name) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -159,7 +144,17 @@ public final class Response implements HttpResponse {
     }
 
     @Override
+    public Header getHeader(final String name) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
     public Header[] getHeaders(final String name) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Header[] getHeaders() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -174,17 +169,12 @@ public final class Response implements HttpResponse {
     }
 
     @Override
-    public Header[] getAllHeaders() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
     public void addHeader(final Header header) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void addHeader(final String name, final String value) {
+    public void addHeader(final String name, final Object value) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -194,7 +184,7 @@ public final class Response implements HttpResponse {
     }
 
     @Override
-    public void setHeader(final String name, final String value) {
+    public void setHeader(final String name, final Object value) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -204,32 +194,22 @@ public final class Response implements HttpResponse {
     }
 
     @Override
-    public void removeHeader(final Header header) {
+    public boolean removeHeader(final Header header) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void removeHeaders(final String name) {
+    public boolean removeHeaders(final String name) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public HeaderIterator headerIterator() {
+    public Iterator<Header> headerIterator() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public HeaderIterator headerIterator(final String name) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public HttpParams getParams() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void setParams(final HttpParams params) {
+    public Iterator<Header> headerIterator(final String name) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -255,17 +235,17 @@ public final class Response implements HttpResponse {
         final String CRLF = "" + (char) 0x0D + (char) 0x0A;
         try {
             final StringBuilder builder = new StringBuilder()
-                .append(this.backbone.getStatusLine().toString())
-                .append(CRLF)    
+                .append(new StatusLine(this.backbone))
+                .append(CRLF)
                 .append(
                    Stream.of(
-                        this.backbone.getAllHeaders()
+                        this.backbone.getHeaders()
                     ).map(header -> header.toString())
                     .collect(Collectors.joining(CRLF))
                 )
                 .append(CRLF).append(CRLF)
                 .append(
-                    new BasicResponseHandler().handleEntity(
+                    new BasicHttpClientResponseHandler().handleEntity(
                         this.backbone.getEntity()
                     )
                 );

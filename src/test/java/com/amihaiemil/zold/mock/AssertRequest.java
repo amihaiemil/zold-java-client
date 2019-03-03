@@ -25,7 +25,7 @@
  */
 package com.amihaiemil.zold.mock;
 
-import org.apache.http.HttpResponse;
+import org.apache.hc.core5.http.ClassicHttpResponse;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -40,7 +40,7 @@ public final class AssertRequest {
     /**
      * The response to return if all conditions are met.
      */
-    private final HttpResponse response;
+    private final ClassicHttpResponse response;
     /**
      * Conditions against which to validate requests.
      */
@@ -51,7 +51,10 @@ public final class AssertRequest {
      * @param resp Given response.
      * @param conds Given conditions.
      */
-    public AssertRequest(final HttpResponse resp, final Condition... conds) {
+    public AssertRequest(
+        final ClassicHttpResponse resp,
+        final Condition... conds
+    ) {
         this.response = resp;
         this.conditions = Arrays.asList(conds);
     }
@@ -60,7 +63,7 @@ public final class AssertRequest {
      * Return the response.
      * @return HttpResponse.
      */
-    public HttpResponse response() {
+    public ClassicHttpResponse response() {
         return this.response;
     }
 

@@ -27,11 +27,13 @@ package com.amihaiemil.zold;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 
-import org.apache.http.HttpStatus;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.HttpClients;
+import org.apache.hc.core5.http.HttpStatus;
+import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
 
 /**
  * RESTful Zold network entry point.
@@ -40,7 +42,7 @@ import org.apache.http.impl.client.HttpClients;
  * @since 0.0.1
  */
 public final class RestfulZoldWts implements ZoldWts {
-    
+
     /**
      * Apache HttpClient which sends the requests.
      */
@@ -50,7 +52,7 @@ public final class RestfulZoldWts implements ZoldWts {
      * Base URI.
      */
     private final URI baseUri = URI.create("https://wts.zold.io");
-    
+
     /**
      * Constructor.
      * @param key API kei. Get it at https://wts.zold.io/api.
@@ -58,20 +60,23 @@ public final class RestfulZoldWts implements ZoldWts {
     public RestfulZoldWts(final String key) {
         this(
             HttpClients.custom()
-                .setMaxConnPerRoute(10)
-                .setMaxConnTotal(10)
-                .addInterceptorFirst(new XZoldWtsRequestHeader(key))
-                .addInterceptorFirst(new UserAgentRequestHeader())
+                .setConnectionManager(
+                    PoolingHttpClientConnectionManagerBuilder.create()
+                        .setMaxConnPerRoute(10)
+                        .setMaxConnTotal(10)
+                        .build())
+                .addRequestInterceptorFirst(new XZoldWtsRequestHeader(key))
+                .addRequestInterceptorFirst(new UserAgentRequestHeader())
                 .disableRedirectHandling()
                 .build()
         );
     }
-    
+
     /**
      * Constructor. We recommend you to use the simple constructor
      * and let us configure the HttpClient for you. <br><br>
      * Use this constructor only if you know what you're doing.
-     * 
+     *
      * @param client Given HTTP Client.
      */
     public RestfulZoldWts(final HttpClient client) {
@@ -79,7 +84,7 @@ public final class RestfulZoldWts implements ZoldWts {
     }
 
     @Override
-    public Wallet pull() throws IOException {
+    public Wallet pull() throws IOException, URISyntaxException {
         final HttpGet pull = new HttpGet(
             URI.create(this.baseUri.toString() + "/pull")
         );
@@ -88,7 +93,7 @@ public final class RestfulZoldWts implements ZoldWts {
                 pull,
                 new WaitForWallet(
                     new MatchStatus(
-                        pull.getURI(),
+                        pull.getUri(),
                         HttpStatus.SC_MOVED_TEMPORARILY
                     ),
                     this.client,
@@ -96,7 +101,7 @@ public final class RestfulZoldWts implements ZoldWts {
                 )
             );
         } finally {
-            pull.releaseConnection();
+            pull.reset();
         }
     }
 }

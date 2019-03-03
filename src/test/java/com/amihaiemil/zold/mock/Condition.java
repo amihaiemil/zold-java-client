@@ -26,7 +26,8 @@
 package com.amihaiemil.zold.mock;
 
 import java.util.function.Predicate;
-import org.apache.http.HttpRequest;
+import org.apache.hc.core5.http.HttpRequest;
+
 import org.junit.Assert;
 
 /**

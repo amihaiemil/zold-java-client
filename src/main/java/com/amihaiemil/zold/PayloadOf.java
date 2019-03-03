@@ -25,9 +25,9 @@
  */
 package com.amihaiemil.zold;
 
-import org.apache.http.HttpEntityEnclosingRequest;
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpResponse;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.ClassicHttpRequest;
 
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -48,15 +48,13 @@ final class PayloadOf extends JsonResource {
      * @param request The http request
      * @throws IllegalStateException if the request's payload cannot be read
      */
-    PayloadOf(final HttpRequest request) {
+    PayloadOf(final ClassicHttpRequest request) {
         super(() -> {
             try {
+                final HttpEntity entity = request.getEntity();
                 final JsonObject body;
-                if (request instanceof HttpEntityEnclosingRequest) {
-                    body = Json.createReader(
-                        ((HttpEntityEnclosingRequest) request).getEntity()
-                            .getContent()
-                    ).readObject();
+                if (entity != null) {
+                    body = Json.createReader(entity.getContent()).readObject();
                 } else {
                     body =  Json.createObjectBuilder().build();
                 }
@@ -74,7 +72,7 @@ final class PayloadOf extends JsonResource {
      * @param response The http response.
      * @throws IllegalStateException if the response's payload cannot be read
      */
-    PayloadOf(final HttpResponse response) {
+    PayloadOf(final ClassicHttpResponse response) {
         super(() -> {
             try {
                 return Json.createReader(

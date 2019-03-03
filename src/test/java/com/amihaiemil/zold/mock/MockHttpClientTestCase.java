@@ -25,15 +25,16 @@
  */
 package com.amihaiemil.zold.mock;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.ProtocolVersion;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.message.BasicHttpResponse;
-import org.apache.http.message.BasicStatusLine;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.HttpStatus;
+import org.apache.hc.core5.http.message.BasicClassicHttpResponse;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
+
+import java.net.URISyntaxException;
 
 /**
  * Tests for {@link MockHttpClient}.
@@ -46,16 +47,11 @@ public final class MockHttpClientTestCase {
     /**
      * Should return the given response if the request meets the given
      * condition.
-     * 
-     * @throws Exception Unexpected.
      */
     @Test
-    public void returnResponseIfRequestMeetsCondition() throws Exception {
-        final HttpResponse response = new BasicHttpResponse(
-            new BasicStatusLine(
-                new ProtocolVersion("HTTP", 1, 1), HttpStatus.SC_OK, "OK"
-            )
-        );
+    public void returnResponseIfRequestMeetsCondition() {
+        final ClassicHttpResponse response =
+            new BasicClassicHttpResponse(HttpStatus.SC_OK);
         MatcherAssert.assertThat(
             new MockHttpClient(
                 new AssertRequest(
@@ -63,7 +59,14 @@ public final class MockHttpClientTestCase {
                     new Condition(
                         "",
                         // @checkstyle LineLength (1 line)
-                        r -> "http://some.test.com".equals(r.getRequestLine().getUri())
+                        r -> {
+                            try {
+                                return "http://some.test.com/"
+                                    .equals(r.getUri().toString());
+                            } catch (final URISyntaxException ex) {
+                                throw new RuntimeException(ex);
+                            }
+                        }
                     )
                 )
             ).execute(new HttpGet("http://some.test.com")),
@@ -73,19 +76,22 @@ public final class MockHttpClientTestCase {
 
     /**
      * Should fail if the http request does not meet the given condition.
-     *
-     * @throws Exception Unexpected.
      */
     @Test(expected = AssertionError.class)
-    public void failIfRequestDoesNotMeetCondition() throws Exception {
+    public void failIfRequestDoesNotMeetCondition() {
         new MockHttpClient(
             new AssertRequest(
                 null,
                 new Condition(
                     "",
-                    r -> "http://some.test.com".equals(
-                        r.getRequestLine().getUri()
-                    )
+                    r -> {
+                        try {
+                            return "http://some.test.com/"
+                                .equals(r.getUri().toString());
+                        } catch (final URISyntaxException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    }
                 )
             )
         ).execute(new HttpGet("http://test.com"));
@@ -94,11 +100,9 @@ public final class MockHttpClientTestCase {
     /**
      * The failure message should be equal to the one specified in the
      * condition.
-     *
-     * @throws Exception Unexpected.
      */
     @Test
-    public void failureMsg() throws Exception {
+    public void failureMsg() {
         final String msg = "Test message";
         try {
             new MockHttpClient(
@@ -107,7 +111,14 @@ public final class MockHttpClientTestCase {
                     new Condition(
                         msg,
                         // @checkstyle LineLength (1 line)
-                        r -> "http://some.test.com".equals(r.getRequestLine().getUri())
+                        r -> {
+                            try {
+                                return "http://some.test.com/"
+                                    .equals(r.getUri().toString());
+                            } catch (final URISyntaxException ex) {
+                                throw new RuntimeException(ex);
+                            }
+                        }
                     )
                 )
             ).execute(new HttpGet("http://test.com"));

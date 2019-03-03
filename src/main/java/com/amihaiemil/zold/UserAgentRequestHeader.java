@@ -29,9 +29,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.Properties;
-import org.apache.http.HttpHeaders;
-import org.apache.http.client.protocol.RequestDefaultHeaders;
-import org.apache.http.message.BasicHeader;
+import org.apache.hc.core5.http.HttpHeaders;
+import org.apache.hc.core5.http.message.BasicHeader;
+import org.apache.hc.client5.http.protocol.RequestDefaultHeaders;
+
 
 /**
  * User Agent Request Header Interceptor.

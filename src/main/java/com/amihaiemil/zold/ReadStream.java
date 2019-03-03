@@ -25,8 +25,9 @@
  */
 package com.amihaiemil.zold;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ResponseHandler;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.HttpException;
+import org.apache.hc.core5.http.io.HttpClientResponseHandler;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -38,25 +39,26 @@ import java.io.Reader;
  * @version $Id$
  * @since 0.0.1
  */
-final class ReadStream implements ResponseHandler<Reader> {
+final class ReadStream implements HttpClientResponseHandler<Reader> {
 
     /**
      * Handlers to be executed before actually reading the array.
      */
-    private final ResponseHandler<HttpResponse> other;
+    private final HttpClientResponseHandler<ClassicHttpResponse> other;
 
     /**
      * Ctor.
      * @param other Handlers to be executed before actually reading the array.
      */
-    ReadStream(final ResponseHandler<HttpResponse> other) {
+    ReadStream(final HttpClientResponseHandler<ClassicHttpResponse> other) {
         this.other = other;
     }
 
     @Override
-    public Reader handleResponse(final HttpResponse httpResponse)
-            throws IOException {
-        final HttpResponse resp = this.other.handleResponse(httpResponse);
+    public Reader handleResponse(final ClassicHttpResponse httpResponse)
+        throws IOException, HttpException {
+        final ClassicHttpResponse resp = this.other
+            .handleResponse(httpResponse);
         return new InputStreamReader(resp.getEntity().getContent());
     }
 }

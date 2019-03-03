@@ -25,8 +25,8 @@
  */
 package com.amihaiemil.zold;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ResponseHandler;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.io.HttpClientResponseHandler;
 
 import java.net.URI;
 
@@ -37,7 +37,8 @@ import java.net.URI;
  * @version $Id$
  * @since 0.0.1
  */
-final class MatchStatus implements ResponseHandler<HttpResponse> {
+final class MatchStatus
+    implements HttpClientResponseHandler<ClassicHttpResponse> {
 
     /**
      * Called URI.
@@ -60,8 +61,10 @@ final class MatchStatus implements ResponseHandler<HttpResponse> {
     }
 
     @Override
-    public HttpResponse handleResponse(final HttpResponse response) {
-        final int actual = response.getStatusLine().getStatusCode();
+    public ClassicHttpResponse handleResponse(
+        final ClassicHttpResponse response
+    ) {
+        final int actual = response.getCode();
         if(actual != this.expected) {
             throw new UnexpectedResponseException(
                 this.called.toString(), actual,

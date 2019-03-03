@@ -25,9 +25,10 @@
  */
 package com.amihaiemil.zold;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.util.EntityUtils;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.HttpException;
+import org.apache.hc.core5.http.io.HttpClientResponseHandler;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
 
 import java.io.IOException;
 
@@ -37,26 +38,26 @@ import java.io.IOException;
  * @version $Id$
  * @since 0.0.1
  */
-final class ReadString implements ResponseHandler<String> {
+final class ReadString implements HttpClientResponseHandler<String> {
 
     /**
      * Handlers to be executed before actually reading the array.
      */
-    private final ResponseHandler<HttpResponse> other;
+    private final HttpClientResponseHandler<ClassicHttpResponse> other;
 
     /**
      * Ctor.
      * @param other Handlers to be executed before actually reading the array.
      */
-    ReadString(final ResponseHandler<HttpResponse> other) {
+    ReadString(final HttpClientResponseHandler<ClassicHttpResponse> other) {
         this.other = other;
     }
 
     @Override
-    public String handleResponse(final HttpResponse httpResponse)
-            throws IOException {
-        final HttpResponse resp = this.other.handleResponse(httpResponse);
+    public String handleResponse(final ClassicHttpResponse httpResponse)
+        throws IOException, HttpException {
+        final ClassicHttpResponse resp = this.other
+            .handleResponse(httpResponse);
         return EntityUtils.toString(resp.getEntity());
     }
-
 }

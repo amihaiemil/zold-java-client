@@ -31,16 +31,16 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.http.HttpHost;
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.conn.ClientConnectionManager;
-import org.apache.http.params.HttpParams;
-import org.apache.http.protocol.HttpContext;
+import org.apache.hc.core5.http.ClassicHttpRequest;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.HttpException;
+import org.apache.hc.core5.http.HttpHost;
+import org.apache.hc.core5.http.HttpRequest;
+import org.apache.hc.core5.http.HttpResponse;
+import org.apache.hc.core5.http.io.HttpClientResponseHandler;
+import org.apache.hc.core5.http.protocol.HttpContext;
+import org.apache.hc.client5.http.classic.HttpClient;
+
 import org.junit.Assert;
 
 /**
@@ -74,72 +74,67 @@ public final class MockHttpClient implements HttpClient {
     }
 
     @Override
-    public HttpParams getParams() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public ClientConnectionManager getConnectionManager() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public HttpResponse execute(final HttpUriRequest request)
-        throws IOException, ClientProtocolException {
+    public HttpResponse execute(final ClassicHttpRequest request) {
         return this.check(request);
     }
 
     @Override
-    public HttpResponse execute(final HttpUriRequest request,
-        final HttpContext context)
-        throws IOException, ClientProtocolException {
+    public HttpResponse execute(final ClassicHttpRequest request,
+        final HttpContext context) {
+        return this.check(request);
+    }
+
+    @Override
+    public ClassicHttpResponse execute(final HttpHost target,
+        final ClassicHttpRequest request) {
         return this.check(request);
     }
 
     @Override
     public HttpResponse execute(final HttpHost target,
-        final HttpRequest request)
-        throws IOException, ClientProtocolException {
+        final ClassicHttpRequest request, final HttpContext context) {
         return this.check(request);
     }
 
     @Override
-    public HttpResponse execute(final HttpHost target,
-        final HttpRequest request, final HttpContext context)
-        throws IOException, ClientProtocolException {
-        return this.check(request);
+    public <T> T execute(final ClassicHttpRequest request,
+        final HttpClientResponseHandler<? extends T> responseHandler)
+        throws IOException {
+        try {
+            return responseHandler.handleResponse(
+                this.check(request)
+            );
+        } catch (final HttpException ex) {
+            throw new IOException(ex);
+        }
     }
 
     @Override
-    public <T> T execute(final HttpUriRequest request,
-        final ResponseHandler<? extends T> responseHandler)
-        throws IOException, ClientProtocolException {
-        return responseHandler.handleResponse(
-            this.check(request)
-        );
-    }
-
-    @Override
-    public <T> T execute(final HttpUriRequest request,
-        final ResponseHandler<? extends T> responseHandler,
-        final HttpContext context)
-        throws IOException, ClientProtocolException {
+    public <T> T execute(
+        final ClassicHttpRequest request,
+        final HttpContext context,
+        final HttpClientResponseHandler<? extends T> responseHandler
+    ) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public <T> T execute(final HttpHost target, final HttpRequest request,
-        final ResponseHandler<? extends T> responseHandler)
-        throws IOException, ClientProtocolException {
+    public <T> T execute(
+        final HttpHost target,
+        final ClassicHttpRequest request,
+        final HttpClientResponseHandler<? extends T> responseHandler
+    ) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     //@checkstyle ParameterNumber (8 lines)
     @Override
-    public <T> T execute(final HttpHost target, final HttpRequest request,
-        final ResponseHandler<? extends T> responseHandler,
-        final HttpContext context)
-        throws IOException, ClientProtocolException {
+    public <T> T execute(
+        final HttpHost target,
+        final ClassicHttpRequest request,
+        final HttpContext context,
+        final HttpClientResponseHandler<? extends T> responseHandler
+    ){
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -149,13 +144,13 @@ public final class MockHttpClient implements HttpClient {
      * @param request The request.
      * @return HttpResponse if all the cehcks pass.
      */
-    private HttpResponse check(final HttpRequest request) {
+    private ClassicHttpResponse check(final ClassicHttpRequest request) {
         final Collection<Condition> conditions = this.assertions.get(0)
             .conditions();
         conditions.forEach(cond -> {
             cond.test(request);
         });
-        final HttpResponse response = this.assertions.get(0).response();
+        final ClassicHttpResponse response = this.assertions.get(0).response();
         this.assertions.remove(0);
         return response;
     }

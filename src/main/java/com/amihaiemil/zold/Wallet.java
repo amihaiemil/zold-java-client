@@ -41,15 +41,17 @@ public interface Wallet {
      * Get the wallet's ID.
      * @return String.
      * @throws IOException If there's a networking problem.
+     * @throws URISyntaxException If there's a problem building URI.
      */
-    String getId() throws IOException;
+    String getId() throws IOException, URISyntaxException;
 
     /**
     * Get the balance of the wallet.
     * @return Balance
     * @throws IOException If there's a networking problem.
+    * @throws URISyntaxException If there's a problem building URI.
     */
-    String balance() throws IOException;
+    String balance() throws IOException, URISyntaxException;
 
     /**
     * Pay to another wallet.
@@ -58,12 +60,13 @@ public interface Wallet {
     * @param amount Amount to be sent
     * @param details The details of transfer
     * @throws IOException If there's a networking problem.
+    * @throws URISyntaxException If there's a problem building URI.
     * @checkstyle ParameterNumber (5 lines)
     */
     void pay(
         final String keygap, final String user,
         final String amount, final String details
-    )throws IOException;
+    ) throws IOException, URISyntaxException;
 
     /**
      * Finds all payments that match this query and returns.

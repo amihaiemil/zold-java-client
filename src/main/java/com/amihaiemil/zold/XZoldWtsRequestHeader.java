@@ -25,8 +25,8 @@
  */
 package com.amihaiemil.zold;
 
-import org.apache.http.client.protocol.RequestDefaultHeaders;
-import org.apache.http.message.BasicHeader;
+import org.apache.hc.core5.http.message.BasicHeader;
+import org.apache.hc.client5.http.protocol.RequestDefaultHeaders;
 
 import java.util.Collections;
 

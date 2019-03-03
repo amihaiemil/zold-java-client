@@ -26,7 +26,7 @@
 package com.amihaiemil.zold.mock;
 
 import javax.json.Json;
-import org.apache.http.HttpStatus;
+import org.apache.hc.core5.http.HttpStatus;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;

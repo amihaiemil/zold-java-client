@@ -31,8 +31,8 @@ import java.util.Iterator;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
-import org.apache.http.HttpEntityEnclosingRequest;
-import org.apache.http.HttpRequest;
+import org.apache.hc.core5.http.ClassicHttpRequest;
+import org.apache.hc.core5.http.HttpEntity;
 
 /**
  * Json Array payload of an HttpRequest.
@@ -54,10 +54,10 @@ public final class ArrayPayloadOf implements Iterator<JsonObject> {
      * @param request The http request
      * @throws IllegalStateException if the request's payload cannot be read
      */
-    public ArrayPayloadOf(final HttpRequest request) {
-        try (JsonReader reader = Json.createReader(
-            ((HttpEntityEnclosingRequest) request).getEntity().getContent())) {
-            if (request instanceof HttpEntityEnclosingRequest) {
+    public ArrayPayloadOf(final ClassicHttpRequest request) {
+        final HttpEntity entity = request.getEntity();
+        try (JsonReader reader = Json.createReader(entity.getContent())) {
+            if (entity != null) {
                 this.resources =
                     reader.readArray().getValuesAs(JsonObject.class).iterator();
             } else {

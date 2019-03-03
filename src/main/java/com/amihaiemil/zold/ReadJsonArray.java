@@ -25,8 +25,9 @@
  */
 package com.amihaiemil.zold;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ResponseHandler;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.HttpException;
+import org.apache.hc.core5.http.io.HttpClientResponseHandler;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -38,25 +39,26 @@ import java.io.IOException;
  * @version $Id$
  * @since 0.0.1
  */
-final class ReadJsonArray implements ResponseHandler<JsonArray> {
+final class ReadJsonArray implements HttpClientResponseHandler<JsonArray> {
 
     /**
      * Handlers to be executed before actually reading the array.
      */
-    private final ResponseHandler<HttpResponse> other;
+    private final HttpClientResponseHandler<ClassicHttpResponse> other;
 
     /**
      * Ctor.
      * @param other Handlers to be executed before actually reading the array.
      */
-    ReadJsonArray(final ResponseHandler<HttpResponse> other) {
+    ReadJsonArray(final HttpClientResponseHandler<ClassicHttpResponse> other) {
         this.other = other;
     }
 
     @Override
-    public JsonArray handleResponse(final HttpResponse httpResponse)
-        throws IOException {
-        final HttpResponse resp = this.other.handleResponse(httpResponse);
+    public JsonArray handleResponse(final ClassicHttpResponse httpResponse)
+        throws IOException, HttpException {
+        final ClassicHttpResponse resp = this.other
+            .handleResponse(httpResponse);
         return Json.createReader(
             resp.getEntity().getContent()
         ).readArray();

@@ -25,13 +25,13 @@
  */
 package com.amihaiemil.zold;
 
-import org.apache.http.HttpStatus;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
+import org.apache.hc.core5.net.URIBuilder;
+import org.apache.hc.core5.http.HttpStatus;
+import org.apache.hc.core5.http.io.entity.StringEntity;
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
 
 import java.io.IOException;
 import java.net.URI;
@@ -71,7 +71,7 @@ final class RtWallet implements Wallet {
     }
 
     @Override
-    public String getId() throws IOException {
+    public String getId() throws IOException, URISyntaxException {
         final HttpGet walletId = new HttpGet(
             URI.create(this.baseUri.toString() + "/id")
         );
@@ -80,18 +80,18 @@ final class RtWallet implements Wallet {
                 walletId,
                 new ReadString(
                     new MatchStatus(
-                        walletId.getURI(),
+                        walletId.getUri(),
                         HttpStatus.SC_OK
                     )
                 )
             );
         } finally {
-            walletId.releaseConnection();
+            walletId.reset();
         }
     }
 
     @Override
-    public String balance() throws IOException{
+    public String balance() throws IOException, URISyntaxException {
         final HttpGet walletBalance = new HttpGet(
             URI.create(this.baseUri.toString() + "/balance")
         );
@@ -100,13 +100,13 @@ final class RtWallet implements Wallet {
                 walletBalance,
                 new ReadString(
                     new MatchStatus(
-                        walletBalance.getURI(),
+                        walletBalance.getUri(),
                         HttpStatus.SC_OK
                     )
                 )
             );
         } finally {
-            walletBalance.releaseConnection();
+            walletBalance.reset();
         }
     }
 
@@ -114,7 +114,7 @@ final class RtWallet implements Wallet {
     public void pay(
         final String keygap, final String user,
         final String amount, final String details
-    ) throws IOException {
+    ) throws IOException, URISyntaxException {
         
         final HttpPost request = new HttpPost(
             URI.create(this.baseUri.toString() + "/do-pay")
@@ -132,13 +132,13 @@ final class RtWallet implements Wallet {
                 request,
                 new ReadString(
                     new MatchStatus(
-                        request.getURI(),
+                        request.getUri(),
                         HttpStatus.SC_MOVED_TEMPORARILY
                     )
                 )
             );
         } finally {
-            request.releaseConnection();
+            request.reset();
         }
     }
 
@@ -157,13 +157,13 @@ final class RtWallet implements Wallet {
                     request,
                     new ReadJsonArray(
                             new MatchStatus(
-                                    request.getURI(),
+                                    request.getUri(),
                                     HttpStatus.SC_OK
                             )
                     )
             );
         } finally {
-            request.releaseConnection();
+            request.reset();
         }
     }
 }

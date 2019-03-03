@@ -25,12 +25,13 @@
  */
 package com.amihaiemil.zold;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.utils.URIBuilder;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.HttpException;
+import org.apache.hc.core5.http.HttpStatus;
+import org.apache.hc.core5.http.io.HttpClientResponseHandler;
+import org.apache.hc.core5.net.URIBuilder;
+import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
 
 import java.io.IOException;
 import java.net.URI;
@@ -44,12 +45,12 @@ import java.time.Instant;
  * @version $Id$
  * @since 0.0.1
  */
-final class WaitForWallet implements ResponseHandler<Wallet> {
+final class WaitForWallet implements HttpClientResponseHandler<Wallet> {
 
     /**
      * Handlers to be executed before actually reading the array.
      */
-    private final ResponseHandler<HttpResponse> other;
+    private final HttpClientResponseHandler<ClassicHttpResponse> other;
 
     /**
      * API client.
@@ -74,7 +75,7 @@ final class WaitForWallet implements ResponseHandler<Wallet> {
      * @param baseUri Base URI.
      */
     WaitForWallet(
-        final ResponseHandler<HttpResponse> other,
+        final HttpClientResponseHandler<ClassicHttpResponse> other,
         final HttpClient client,
         final URI baseUri
     ) {
@@ -84,9 +85,10 @@ final class WaitForWallet implements ResponseHandler<Wallet> {
     }
 
     @Override
-    public Wallet handleResponse(final HttpResponse httpResponse)
-        throws IOException {
-        final HttpResponse resp = this.other.handleResponse(httpResponse);
+    public Wallet handleResponse(final ClassicHttpResponse httpResponse)
+        throws IOException, HttpException {
+        final ClassicHttpResponse resp = this.other
+            .handleResponse(httpResponse);
         final String jobId = resp.getFirstHeader("X-Zold-Job").getValue();
         if(jobId == null || jobId.isEmpty()) {
             throw new IllegalStateException(
@@ -165,7 +167,7 @@ final class WaitForWallet implements ResponseHandler<Wallet> {
                 status,
                 new ReadString(
                         new MatchStatus(
-                                status.getURI(),
+                                status.getUri(),
                                 HttpStatus.SC_OK
                         )
                 )
