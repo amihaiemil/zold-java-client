@@ -56,17 +56,17 @@ public final class ArrayPayloadOf implements Iterator<JsonObject> {
      */
     public ArrayPayloadOf(final ClassicHttpRequest request) {
         final HttpEntity entity = request.getEntity();
-        try (JsonReader reader = Json.createReader(entity.getContent())) {
-            if (entity != null) {
+        if (entity != null) {
+            try (JsonReader reader = Json.createReader(entity.getContent())) {
                 this.resources =
                     reader.readArray().getValuesAs(JsonObject.class).iterator();
-            } else {
-                this.resources = new ArrayList<JsonObject>().iterator();
+            } catch (final IOException ex) {
+                throw new IllegalStateException(
+                    "Cannot read request payload", ex
+                );
             }
-        } catch (final IOException ex) {
-            throw new IllegalStateException(
-                "Cannot read request payload", ex
-            );
+        } else {
+            this.resources = new ArrayList<JsonObject>().iterator();
         }
     }
 
