@@ -59,14 +59,30 @@ final class UserAgentRequestHeader extends RequestDefaultHeaders {
         super(Collections.singletonList(
             new BasicHeader(
                 HttpHeaders.USER_AGENT,
-                String.join(
-                    " ",
-                    "zold-java-client /",
-                    version(),
-                    "See https://github.com/amihaiemil/zold-java-client"
+                join(
+                    new String[] {
+                        "zold-java-client /",
+                        version(),
+                        "See https://github.com/amihaiemil/zold-java-client",
+                        },
+           " "
                 )
             )
         ));
+    }
+
+    /**
+     * Join string array.
+     * @param str Array to be joined.
+     * @param separator To separate array elements.
+     * @return String joined by the separator.
+     */
+    private static String join(final String[] str, final String separator){
+        String retval = "";
+        for (final String string: str){
+            retval+= separator + string;
+        }
+        return retval.replaceFirst(separator, "");
     }
 
     /**
