@@ -8,7 +8,7 @@ import java.util.Objects;
  * @version $Id$
  * @since 0.0.3
  */
-private final class CharSequences {
+final class CharSequences {
     /**
      * Private default constructor.
      */
