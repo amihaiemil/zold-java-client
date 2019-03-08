@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.amihaiemil.web</groupId>
 	<artifactId>zold-java-client</artifactId>
-	<version>0.0.3-SNAPSHOT</version><!--rrv-sed-flag-->
+	<version>0.0.4-SNAPSHOT</version><!--rrv-sed-flag-->
 	<name>Zold Java Client</name>
 	<description>Java wrapper over Zold's RESTful API</description>
 	<url>https://www.github.com/amihaiemil/zold-java-client</url>

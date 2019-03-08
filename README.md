@@ -19,13 +19,13 @@ The library comes as a maven dependency:
 <dependency>
     <groupId>com.amihaiemil.web</groupId>
     <artifactId>zold-java-client</artifactId>
-    <version>0.0.2</version>
+    <version>0.0.3</version>
 </dependency>
 ```
 
 **In order for it to work, you need to have an implementation of [JSON-P (JSR 374)](https://javaee.github.io/jsonp/index.html) in your classpath (it doesn't come transitively since most people are using Java EE APIs so, chances are it is already provided!).**
 
-If you are not using Maven, you can also download the <a href="https://oss.sonatype.org/service/local/repositories/releases/content/com/amihaiemil/web/zold-java-client/0.0.2/zold-java-client-0.0.2-jar-with-dependencies.jar">fat</a> jar.
+If you are not using Maven, you can also download the <a href="https://oss.sonatype.org/service/local/repositories/releases/content/com/amihaiemil/web/zold-java-client/0.0.3/zold-java-client-0.0.3-jar-with-dependencies.jar">fat</a> jar.
 
 ### Contributing 
 
