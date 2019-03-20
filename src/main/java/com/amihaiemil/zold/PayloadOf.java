@@ -39,7 +39,6 @@ import java.io.IOException;
  * @author George Aristy (george.aristy@gmail.com)
  * @version $Id$
  * @since 0.0.1
- * @todo #25:30min Add tests for PayloadOf.
  */
 final class PayloadOf extends JsonResource {
     /**
