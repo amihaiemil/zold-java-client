@@ -26,6 +26,7 @@
 package com.amihaiemil.zold.mock;
 
 import javax.json.Json;
+import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.HttpStatus;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -47,6 +48,7 @@ public final class ResponseTestCase {
         MatcherAssert.assertThat(
             new Response(
                 HttpStatus.SC_OK,
+                ContentType.APPLICATION_JSON,
                 Json.createArrayBuilder()
                     .add(
                         Json.createObjectBuilder()

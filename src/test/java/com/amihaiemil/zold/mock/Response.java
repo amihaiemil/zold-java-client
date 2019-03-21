@@ -61,41 +61,37 @@ public final class Response implements ClassicHttpResponse {
      * Its backbone, holding what we need.
      */
     private ClassicHttpResponse backbone;
-    
-    /**
-     * Ctor.
-     * <p>
-     * Response with no payload.
-     * @param status The {@link HttpStatus http status code}
-     */
-    public Response(final int status) {
-        this(status, "{}");
-    }
 
     /**
      * Ctor.
      *
      * @param status The {@link HttpStatus http status code}
-     * @param jsonPayload The json payload
+     * @param contentType The content type
+     * @param payload The payload
      */
-    public Response(final int status, final String jsonPayload) {
+    public Response(
+        final int status,
+        final ContentType contentType,
+        final String payload
+    ) {
         this.backbone = new BasicClassicHttpResponse(status, "REASON");
         this.backbone.setVersion(new ProtocolVersion("HTTP", 1, 1));
         this.backbone.setEntity(
             new StringEntity(
-                jsonPayload, ContentType.APPLICATION_JSON
+                payload, contentType
             )
         );
         this.backbone.setHeader("Date", new Date().toString());
         this.backbone.setHeader(
-            "Content-Length", String.valueOf(jsonPayload.getBytes().length)
+            "Content-Length",
+            String.valueOf(payload.getBytes().length)
         );
-        this.backbone.setHeader("Content-Type", "application/json");
+        this.backbone.setHeader("Content-Type", contentType.toString());
     }
 
     @Override
     public int getCode() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return this.backbone.getCode();
     }
 
     @Override

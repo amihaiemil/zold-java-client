@@ -26,6 +26,7 @@
 package com.amihaiemil.zold;
 
 import com.amihaiemil.zold.mock.Response;
+import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.HttpStatus;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -47,6 +48,7 @@ public class PayloadOfTestCase {
             new PayloadOf(
                 new Response(
                     HttpStatus.SC_OK,
+                    ContentType.APPLICATION_JSON,
                     Json.createObjectBuilder()
                         .add("key", "value")
                         .build().toString()
