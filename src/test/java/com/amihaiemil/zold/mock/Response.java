@@ -38,6 +38,7 @@ import java.util.stream.Stream;
 import org.apache.hc.core5.http.ClassicHttpResponse;
 import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.Header;
+import org.apache.hc.core5.http.HttpEntity;
 import org.apache.hc.core5.http.HttpResponse;
 import org.apache.hc.core5.http.HttpStatus;
 import org.apache.hc.core5.http.ProtocolVersion;
@@ -54,7 +55,7 @@ import org.apache.hc.client5.http.impl.classic.BasicHttpClientResponseHandler;
  * @version $Id$
  * @since 0.0.1
  */
-public final class Response implements HttpResponse {
+public final class Response implements ClassicHttpResponse {
 
     /**
      * Its backbone, holding what we need.
@@ -211,6 +212,21 @@ public final class Response implements HttpResponse {
     @Override
     public Iterator<Header> headerIterator(final String name) {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public HttpEntity getEntity() {
+        return this.backbone.getEntity();
+    }
+
+    @Override
+    public void setEntity(final HttpEntity httpEntity) {
+        this.backbone.setEntity(httpEntity);
+    }
+
+    @Override
+    public void close() throws IOException {
+        this.backbone.close();
     }
 
     /**
