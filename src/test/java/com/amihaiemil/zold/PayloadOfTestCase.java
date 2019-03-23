@@ -37,7 +37,7 @@ import javax.json.Json;
 /**
  * Unit tests for {@link PayloadOf}.
  */
-public class PayloadOfTestCase {
+public final class PayloadOfTestCase {
 
     /**
      * Checks whether the {@link PayloadOf} is instantiated.
