@@ -46,7 +46,7 @@ import javax.json.JsonArray;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
- * @todo #34:30min Write unit tests for uncovered wallet operations.
+ * @todo #56:30min Write unit tests for uncovered wallet operations.
  * @checkstyle ParameterNumber (200 lines)
  */
 final class RtWallet implements Wallet {

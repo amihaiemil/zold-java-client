@@ -37,8 +37,13 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
+import javax.json.Json;
+import javax.json.JsonArray;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Provides a test case for the {@link RtWallet} operations.
@@ -95,6 +100,103 @@ public final class RtWalletTestCase {
                 URI.create(BASE_URI)
             ).getId(),
             Matchers.equalTo("12345")
+        );
+    }
+
+    /**
+     * Checks whether the {@link RtWallet#balance()} invocation succeeds.
+     * @throws Exception If an exception is thrown
+     */
+    @Test
+    public void getsBalance() throws Exception {
+        final ClassicHttpResponse response = new Response(
+            HttpStatus.SC_OK,
+            ContentType.TEXT_PLAIN,
+            "12345"
+        );
+        final HttpClient httpClient = new MockHttpClient(
+            new AssertRequest(
+                response,
+                new Condition(
+                    "Request path is invalid",
+                    r -> {
+                        try {
+                            return (BASE_URI + "/balance")
+                                .equals(r.getUri().toString());
+                        } catch (final URISyntaxException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    }
+                )
+            )
+        );
+        MatcherAssert.assertThat(
+            "Wallet balance is invalid",
+            new RtWallet(
+                httpClient,
+                URI.create(BASE_URI)
+            ).balance(),
+            Matchers.equalTo("12345")
+        );
+    }
+
+    /**
+     * Checks whether the {@link RtWallet#find(Map)} invocation
+     * succeeds.
+     * @throws Exception If an exception is thrown
+     */
+    @Test
+    public void findsWalletTransactions() throws Exception {
+        final JsonArray payload = Json.createArrayBuilder()
+            .add(
+                Json.createObjectBuilder()
+                    .add("id", "1")
+                    .add("date", "2019-01-26T11:05:17Z")
+                    .add("amount", "17")
+                    .add("bnf", "72e0b23d95a983d6")
+                    .add("details", "Hosting bonus")
+            )
+            .build();
+        final ClassicHttpResponse response = new Response(
+            HttpStatus.SC_OK,
+            ContentType.APPLICATION_JSON,
+            payload.toString()
+        );
+        final HttpClient httpClient = new MockHttpClient(
+            new AssertRequest(
+                response,
+                new Condition(
+                    "Request path is invalid",
+                    r -> {
+                        try {
+                            System.out.println(r.getUri().toString());
+                            return (BASE_URI + "/find?amount=17&"
+                                + "details=Hosting+bonus&bnf=72e0b23d95a983d6")
+                                .equals(r.getUri().toString());
+                        } catch (final URISyntaxException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    }
+                )
+            )
+        );
+        MatcherAssert.assertThat(
+            "Wallet find operation failed",
+            new RtWallet(
+                httpClient,
+                URI.create(BASE_URI)
+            ).find(
+                Stream.of(
+                    new String[][] {
+                        {"amount", "17"},
+                        {"details", "Hosting bonus"},
+                        {"bnf", "72e0b23d95a983d6"},
+                    }
+                ).collect(
+                    Collectors.toMap(e -> e[0], e -> e[1])
+                )
+            ),
+            Matchers.equalTo(payload)
         );
     }
 }
