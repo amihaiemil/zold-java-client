@@ -26,6 +26,7 @@
 package com.amihaiemil.zold;
 
 import javax.json.JsonArray;
+import javax.json.JsonObject;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
@@ -71,11 +72,17 @@ public interface Wallet {
     /**
      * Finds all payments that match this query and returns.
      * @return Array of found transactions.
-     * @param id Wallet id
-     * @param details Regex of payment details
+     * @param params Json object contains params to search for.
+     *   Possible values:
+     *     id
+     *     date
+     *     amount
+     *     prefix
+     *     bnf
+     *     details
      * @throws IOException If there's a networking problem.
      * @throws URISyntaxException If there's a problem building URI.
      */
-    JsonArray find(String id, String details)
+    JsonArray find(final JsonObject params)
             throws IOException, URISyntaxException;
 }

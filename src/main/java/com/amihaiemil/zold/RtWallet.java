@@ -39,6 +39,7 @@ import java.net.URISyntaxException;
 
 import javax.json.Json;
 import javax.json.JsonArray;
+import javax.json.JsonObject;
 
 /**
  * RESTful Zold wallet.
@@ -143,12 +144,12 @@ final class RtWallet implements Wallet {
     }
 
     @Override
-    public JsonArray find(
-            final String id, final String details
-    ) throws IOException, URISyntaxException {
+    public JsonArray find(final JsonObject params)
+            throws IOException, URISyntaxException {
         URIBuilder builder = new URIBuilder(this.baseUri.toString() + "/find");
-        builder.setParameter("bnf", id);
-        builder.setParameter("details", details);
+        for (final String key: params.keySet()) {
+            builder.setParameter(key, params.getString(key));
+        }
         final HttpGet request = new HttpGet(
                 builder.build()
         );
