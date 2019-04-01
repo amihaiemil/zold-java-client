@@ -36,9 +36,7 @@ import org.apache.hc.client5.http.classic.methods.HttpPost;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -62,6 +60,18 @@ final class RtWallet implements Wallet {
      * Base uri.
      */
     private final URI baseUri;
+
+    /**
+    * Valid params in find.
+    */
+    private static final Set<String> VALID_FIND_PARAMS =
+            Collections.unmodifiableSet(
+                new HashSet<>(
+                        Arrays.asList(
+                            "id", "date", "amount", "prefix", "bnf", "details"
+                        )
+                )
+            );
 
     /**
      * Ctor.
@@ -150,20 +160,12 @@ final class RtWallet implements Wallet {
             throws IOException, URISyntaxException {
         URIBuilder builder = new URIBuilder(this.baseUri.toString() + "/find");
 
-        Set<String> validParams = new HashSet<>();
-
-        validParams.add("id");
-        validParams.add("date");
-        validParams.add("amount");
-        validParams.add("prefix");
-        validParams.add("bnf");
-        validParams.add("details");
-
         for (final String key: params.keySet()) {
-            if(validParams.contains(key)) {
+            if(VALID_FIND_PARAMS.contains(key)) {
                 builder.setParameter(key, params.get(key));
             }
         }
+
         final HttpGet request = new HttpGet(
                 builder.build()
         );
