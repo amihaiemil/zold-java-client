@@ -26,9 +26,9 @@
 package com.amihaiemil.zold;
 
 import javax.json.JsonArray;
-import javax.json.JsonObject;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Map;
 
 /**
  * Zold Wallet.
@@ -74,15 +74,17 @@ public interface Wallet {
      * @return Array of found transactions.
      * @param params Json object contains params to search for.
      *   Possible values:
-     *     id
-     *     date
-     *     amount
-     *     prefix
-     *     bnf
-     *     details
+     *   <ul>
+     *       <li>id</li>
+     *       <li>date</li>
+     *       <li>amount</li>
+     *       <li>prefix</li>
+     *       <li>bnf</li>
+     *       <li>details</li>
+     *   </ul>
      * @throws IOException If there's a networking problem.
      * @throws URISyntaxException If there's a problem building URI.
      */
-    JsonArray find(final JsonObject params)
+    JsonArray find(final Map<String, String> params)
             throws IOException, URISyntaxException;
 }

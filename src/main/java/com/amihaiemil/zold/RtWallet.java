@@ -36,10 +36,12 @@ import org.apache.hc.client5.http.classic.methods.HttpPost;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import javax.json.Json;
 import javax.json.JsonArray;
-import javax.json.JsonObject;
 
 /**
  * RESTful Zold wallet.
@@ -144,11 +146,23 @@ final class RtWallet implements Wallet {
     }
 
     @Override
-    public JsonArray find(final JsonObject params)
+    public JsonArray find(final Map<String, String> params)
             throws IOException, URISyntaxException {
         URIBuilder builder = new URIBuilder(this.baseUri.toString() + "/find");
+
+        Set<String> validParams = new HashSet<>();
+
+        validParams.add("id");
+        validParams.add("date");
+        validParams.add("amount");
+        validParams.add("prefix");
+        validParams.add("bnf");
+        validParams.add("details");
+
         for (final String key: params.keySet()) {
-            builder.setParameter(key, params.getString(key));
+            if(validParams.contains(key)) {
+                builder.setParameter(key, params.get(key));
+            }
         }
         final HttpGet request = new HttpGet(
                 builder.build()
