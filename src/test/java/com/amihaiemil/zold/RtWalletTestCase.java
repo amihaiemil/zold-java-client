@@ -201,8 +201,8 @@ public final class RtWalletTestCase {
     }
 
     /**
-     * Checks whether the {@link RtWallet#pay(String, String, String, String)} invocation
-     * succeeds.
+     * Checks whether the {@link RtWallet#pay(String, String, String, String)}
+     * invocation succeeds.
      * @throws Exception If an exception is thrown
      */
     @Test
@@ -216,15 +216,15 @@ public final class RtWalletTestCase {
                 new AssertRequest(
                         response,
                         new Condition(
-                                "Request path is invalid",
-                                r -> {
-                                    try {
-                                        return (BASE_URI + "/do-pay")
-                                                .equals(r.getUri().toString());
-                                    } catch (final URISyntaxException ex) {
-                                        throw new RuntimeException(ex);
-                                    }
+                            "Request path is invalid",
+                            r -> {
+                                try {
+                                    return (BASE_URI + "/do-pay")
+                                            .equals(r.getUri().toString());
+                                } catch (final URISyntaxException ex) {
+                                    throw new RuntimeException(ex);
                                 }
+                            }
                         )
                 )
         );
