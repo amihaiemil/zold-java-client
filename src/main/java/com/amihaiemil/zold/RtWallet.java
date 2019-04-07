@@ -46,7 +46,6 @@ import javax.json.JsonArray;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
- * @todo #56:30min Write unit tests for uncovered wallet operations.
  * @checkstyle ParameterNumber (200 lines)
  */
 final class RtWallet implements Wallet {
@@ -138,15 +137,15 @@ final class RtWallet implements Wallet {
             .add("amount", amount)
             .add("details", details)
             .build().toString();
-        request.setEntity(new StringEntity(payload.toString(),
+        request.setEntity(new StringEntity(payload,
              ContentType.APPLICATION_JSON));
         try {
             this.client.execute(
                 request,
-                new ReadString(
+                new ReadStream(
                     new MatchStatus(
                         request.getUri(),
-                        HttpStatus.SC_MOVED_TEMPORARILY
+                        HttpStatus.SC_OK
                     )
                 )
             );

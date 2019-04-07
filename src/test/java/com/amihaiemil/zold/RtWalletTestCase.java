@@ -199,4 +199,38 @@ public final class RtWalletTestCase {
             Matchers.equalTo(payload)
         );
     }
+
+    /**
+     * Checks whether the {@link RtWallet#pay(String, String, String, String)} invocation
+     * succeeds.
+     * @throws Exception If an exception is thrown
+     */
+    @Test
+    public void pays() throws Exception  {
+        final ClassicHttpResponse response = new Response(
+                HttpStatus.SC_OK,
+                ContentType.TEXT_PLAIN,
+                "12345"
+        );
+        final HttpClient httpClient = new MockHttpClient(
+                new AssertRequest(
+                        response,
+                        new Condition(
+                                "Request path is invalid",
+                                r -> {
+                                    try {
+                                        return (BASE_URI + "/do-pay")
+                                                .equals(r.getUri().toString());
+                                    } catch (final URISyntaxException ex) {
+                                        throw new RuntimeException(ex);
+                                    }
+                                }
+                        )
+                )
+        );
+        new RtWallet(
+                httpClient,
+                URI.create(BASE_URI)
+        ).pay("a", "b", "1", "d");
+    }
 }
