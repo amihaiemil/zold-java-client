@@ -208,25 +208,25 @@ public final class RtWalletTestCase {
     @Test
     public void pays() throws Exception  {
         final ClassicHttpResponse response = new Response(
-                HttpStatus.SC_OK,
-                ContentType.TEXT_PLAIN,
-                "12345"
+            HttpStatus.SC_OK,
+            ContentType.TEXT_PLAIN,
+            "12345"
         );
         final HttpClient httpClient = new MockHttpClient(
-                new AssertRequest(
-                        response,
-                        new Condition(
-                            "Request path is invalid",
-                            r -> {
-                                try {
-                                    return (BASE_URI + "/do-pay")
-                                            .equals(r.getUri().toString());
-                                } catch (final URISyntaxException ex) {
-                                    throw new RuntimeException(ex);
-                                }
-                            }
-                        )
+            new AssertRequest(
+                response,
+                new Condition(
+                    "Request path is invalid",
+                    r -> {
+                        try {
+                            return (BASE_URI + "/do-pay")
+                                    .equals(r.getUri().toString());
+                        } catch (final URISyntaxException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    }
                 )
+            )
         );
         new RtWallet(
                 httpClient,
