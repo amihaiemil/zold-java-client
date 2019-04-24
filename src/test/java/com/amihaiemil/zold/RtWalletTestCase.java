@@ -225,6 +225,15 @@ public final class RtWalletTestCase {
                             throw new RuntimeException(ex);
                         }
                     }
+                ),
+                new Condition(
+                    "Request payload is invalid",
+                    r -> new PayloadOf(r).toString().equals(
+                        "{\"keygap\":\"a\","
+                        + "\"bnf\":\"b\","
+                        + "\"amount\":\"1\","
+                        + "\"details\":\"d\"}"
+                    )
                 )
             )
         );

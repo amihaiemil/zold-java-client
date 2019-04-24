@@ -26,6 +26,8 @@
 package com.amihaiemil.zold.mock;
 
 import java.util.function.Predicate;
+
+import org.apache.hc.core5.http.ClassicHttpRequest;
 import org.apache.hc.core5.http.HttpRequest;
 
 import org.junit.Assert;
@@ -45,7 +47,7 @@ public final class Condition {
     /**
      * The test that the http request must satisfy.
      */
-    private final Predicate<HttpRequest> predicate;
+    private final Predicate<ClassicHttpRequest> predicate;
 
     /**
      * Ctor.
@@ -53,7 +55,10 @@ public final class Condition {
      * @param msg The failure message.
      * @param test The test.
      */
-    public Condition(final String msg, final Predicate<HttpRequest> test) {
+    public Condition(
+        final String msg,
+        final Predicate<ClassicHttpRequest> test
+    ) {
         this.msg = msg;
         this.predicate = test;
     }
@@ -64,7 +69,7 @@ public final class Condition {
      * @param request The request to test.
      * @throws AssertionError if the request does not satisfy this condition
      */
-    public void test(final HttpRequest request) {
+    public void test(final ClassicHttpRequest request) {
         if (!this.predicate.test(request)) {
             Assert.fail(this.msg);
         }
