@@ -1,7 +1,5 @@
 # zold-java-client
 
-[![Managed by Zerocrat](https://www.0crat.com/badge/GFCHY7NQG.svg)](https://www.0crat.com/p/GFCHY7NQG)
-
 [![Build Status](https://travis-ci.org/amihaiemil/zold-java-client.svg?branch=master)](https://travis-ci.org/amihaiemil/zold-java-client)
 [![Coverage Status](https://coveralls.io/repos/github/amihaiemil/zold-java-client/badge.svg?branch=master)](https://coveralls.io/github/amihaiemil/zold-java-client?branch=master)
 
