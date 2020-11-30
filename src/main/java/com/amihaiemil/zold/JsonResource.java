@@ -37,6 +37,8 @@ import java.util.function.Supplier;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
+ * @todo #1:45min This is a todo which should automatically
+ *  be turned into an Issue by the PM, when it is pushed to master.
  */
 abstract class JsonResource implements JsonObject {
 
